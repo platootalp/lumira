@@ -6,12 +6,13 @@ import { Button } from "@/components/ui/button";
 import { FundCard } from "@/components/fund-card";
 import { AddHoldingModal } from "@/components/add-holding-modal";
 import { PortfolioChart } from "@/components/portfolio-chart";
+import { DataImportExport } from "@/components/data-import-export";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePortfolioStore } from "@/stores/portfolio";
 import { holdingDb } from "@/lib/db";
 import { getBatchEstimates, calculateEstimateProfit } from "@/services/fund";
 import { formatNumber, cn } from "@/lib/utils";
-import { Plus, RefreshCw, TrendingUp, TrendingDown, Wallet } from "lucide-react";
+import { Plus, RefreshCw, TrendingUp, TrendingDown, Wallet, Settings } from "lucide-react";
 
 import type { Holding, HoldingWithEstimate, FundEstimate } from "@/types";
 
@@ -34,6 +35,7 @@ export default function HomePage() {
   const [estimates, setEstimates] = useState<Map<string, FundEstimate>>(new Map());
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // 计算带估值的持仓
   const holdingsWithEstimates: HoldingWithEstimate[] = holdings.map(holding => {
@@ -132,6 +134,14 @@ export default function HomePage() {
           <div className="flex justify-between items-center h-16">
             <h1 className="text-xl font-bold text-gray-900">Lumira 基金助手</h1>
             <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsSettingsOpen(true)}
+              >
+                <Settings className="w-4 h-4 mr-1" />
+                设置
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
@@ -314,6 +324,24 @@ export default function HomePage() {
         onClose={() => setIsModalOpen(false)}
         onAdd={handleAddHolding}
       />
+
+      {/* 设置弹窗 */}
+      {isSettingsOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <DataImportExport
+            onImportSuccess={() => {
+              fetchHoldings();
+              setIsSettingsOpen(false);
+            }}
+          />
+          <button
+            onClick={() => setIsSettingsOpen(false)}
+            className="absolute top-4 right-4 text-white hover:text-gray-200"
+          >
+            ✕
+          </button>
+        </div>
+      )}
     </main>
   );
 }
