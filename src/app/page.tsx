@@ -13,7 +13,8 @@ import { usePortfolioStore } from "@/stores/portfolio";
 import { holdingDb } from "@/lib/db";
 import { getBatchEstimates, calculateEstimateProfit } from "@/services/fund";
 import { formatNumber, cn } from "@/lib/utils";
-import { Plus, RefreshCw, TrendingUp, TrendingDown, Wallet, Settings } from "lucide-react";
+import { Plus, RefreshCw, TrendingUp, TrendingDown, Wallet, Settings, GitCompare } from "lucide-react";
+import Link from "next/link";
 
 import type { Holding, HoldingWithEstimate, FundEstimate } from "@/types";
 
@@ -135,6 +136,12 @@ export default function HomePage() {
           <div className="flex justify-between items-center h-16">
             <h1 className="text-xl font-bold text-gray-900">Lumira 基金助手</h1>
             <div className="flex items-center gap-2">
+              <Link href="/compare">
+                <Button variant="outline" size="sm">
+                  <GitCompare className="w-4 h-4 mr-1" />
+                  对比
+                </Button>
+              </Link>
               <Button
                 variant="outline"
                 size="sm"
