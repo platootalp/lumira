@@ -9,7 +9,8 @@ import { PortfolioChart } from "@/components/portfolio-chart";
 import { holdingDb, transactionDb } from "@/lib/db";
 import { getFundEstimate, fetchNavHistory } from "@/services/fund";
 import { formatNumber, cn } from "@/lib/utils";
-import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign } from "lucide-react";
+import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Plus } from "lucide-react";
+import { TransactionForm } from "@/components/transaction-form";
 
 import type { Holding, Transaction, FundEstimate } from "@/types";
 
@@ -28,6 +29,7 @@ export default function FundDetailPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [navHistory, setNavHistory] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showTransactionForm, setShowTransactionForm] = useState(false);
 
   // 加载数据
   useEffect(() => {
@@ -122,6 +124,13 @@ export default function FundDetailPage() {
               </h1>
               <p className="text-sm text-gray-500">{fundCode}</p>
             </div>
+            <Button
+              size="sm"
+              onClick={() => setShowTransactionForm(true)}
+            >
+              <Plus className="w-4 h-4 mr-1" />
+              添加交易
+            </Button>
           </div>
         </div>
       </header>
@@ -351,6 +360,21 @@ export default function FundDetailPage() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* 添加交易弹窗 */}
+      {showTransactionForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <TransactionForm
+            fundId={fundCode}
+            fundName={estimate.fundName}
+            onSuccess={() => {
+              loadData();
+              setShowTransactionForm(false);
+            }}
+            onCancel={() => setShowTransactionForm(false)}
+          />
+        </div>
+      )}
     </main>
   );
 }
