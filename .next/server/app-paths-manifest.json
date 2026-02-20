@@ -1,0 +1,6 @@
+{
+  "/page": "app/page.js",
+  "/fund/[code]/page": "app/fund/[code]/page.js",
+  "/compare/page": "app/compare/page.js",
+  "/rankings/page": "app/rankings/page.js"
+}
