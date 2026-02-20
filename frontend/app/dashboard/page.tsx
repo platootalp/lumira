@@ -6,7 +6,7 @@ import { useAutoRefresh } from "@/hooks/useAutoRefresh"
 import { fundOperations } from "@/lib/db"
 import { useTimeDimension } from "@/hooks/useTimeDimension"
 import ProfitCalendar from "@/components/charts/ProfitCalendar"
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState, useMemo, useCallback } from "react"
 import {
   TrendingUp,
   TrendingDown,
@@ -98,6 +98,7 @@ export default function DashboardPage() {
   }, [stats.totalCost])
 
   useEffect(() => {
+    let isMounted = true
     const loadTopPositions = async () => {
       const enriched = await Promise.all(
         positions.slice(0, 5).map(async (pos) => {
@@ -117,18 +118,26 @@ export default function DashboardPage() {
           }
         })
       )
-      setTopPositions(enriched)
+      if (isMounted) {
+        setTopPositions(enriched)
+      }
     }
 
     if (positions.length > 0) {
       loadTopPositions()
     }
+
+    return () => { isMounted = false }
   }, [positions])
 
-  const handleRefresh = async () => {
-    await loadPositions()
-    setLastUpdated(new Date())
-  }
+  const handleRefresh = useCallback(async () => {
+    try {
+      await loadPositions()
+      setLastUpdated(new Date())
+    } catch (error) {
+      console.error('Refresh failed:', error)
+    }
+  }, [loadPositions])
 
   useAutoRefresh(handleRefresh, 60000, positions.length > 0)
 

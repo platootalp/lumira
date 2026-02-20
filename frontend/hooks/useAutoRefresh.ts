@@ -24,6 +24,11 @@ export function useAutoRefresh(
       return
     }
 
+    if (interval <= 0) {
+      console.warn('useAutoRefresh: interval must be positive')
+      return
+    }
+
     const intervalId = setInterval(() => {
       callbackRef.current()
     }, interval)
