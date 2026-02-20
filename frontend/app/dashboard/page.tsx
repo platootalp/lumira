@@ -6,6 +6,7 @@ import { useAutoRefresh } from "@/hooks/useAutoRefresh"
 import { fundOperations } from "@/lib/db"
 import { useTimeDimension } from "@/hooks/useTimeDimension"
 import ProfitCalendar from "@/components/charts/ProfitCalendar"
+import { PullToRefresh } from "@/components/layout/PullToRefresh"
 import { useEffect, useState, useMemo, useCallback } from "react"
 import {
   TrendingUp,
@@ -274,9 +275,10 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 图表区域 */}
-      {positions.length > 0 && (
-        <div className="grid gap-6 lg:grid-cols-2">
+      <PullToRefresh onRefresh={handleRefresh}>
+        {/* 图表区域 */}
+        {positions.length > 0 && (
+          <div className="grid gap-6 lg:grid-cols-2">
           {/* 资产分布饼图 */}
           <div className="rounded-xl border border-white/5 bg-card p-6">
             <h3 className="mb-4 text-lg font-semibold text-white">资产分布</h3>
@@ -445,6 +447,7 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+      </PullToRefresh>
     </div>
   )
 }
