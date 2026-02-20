@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FundCard } from "@/components/fund-card";
+import { AddHoldingModal } from "@/components/add-holding-modal";
 import { usePortfolioStore } from "@/stores/portfolio";
+import { holdingDb } from "@/lib/db";
+import { getBatchEstimates, calculateEstimateProfit } from "@/services/fund";
 import { formatNumber, cn } from "@/lib/utils";
 import { Plus, RefreshCw, TrendingUp, TrendingDown, Wallet } from "lucide-react";
+
+import type { Holding, HoldingWithEstimate, FundEstimate } from "@/types";
 
 /**
  * 资产总览页 - 首页
@@ -21,28 +26,97 @@ export default function HomePage() {
     isLoading,
     error,
     fetchHoldings,
-    analysis
   } = usePortfolioStore();
 
   const [mounted, setMounted] = useState(false);
+  const [estimates, setEstimates] = useState<Map<string, FundEstimate>>(new Map());
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // 计算带估值的持仓
+  const holdingsWithEstimates: HoldingWithEstimate[] = holdings.map(holding => {
+    const estimate = estimates.get(holding.fundId);
+    const estimateNav = estimate?.lastNav || holding.avgCost;
+    
+    const profit = calculateEstimateProfit(
+      holding.totalShares,
+      holding.avgCost,
+      estimateNav
+    );
+    
+    return {
+      ...holding,
+      estimateNav: estimate?.estimateNav,
+      estimateTime: estimate?.estimateTime,
+      marketValue: profit.marketValue,
+      profit: profit.profit,
+      profitRate: profit.profitRate,
+      todayProfit: profit.todayProfit
+    };
+  });
+
+  // 计算汇总数据
+  const summary = {
+    totalAssets: holdingsWithEstimates.reduce((sum, h) => sum + h.marketValue, 0),
+    totalCost: holdingsWithEstimates.reduce((sum, h) => sum + h.totalCost, 0),
+    totalProfit: holdingsWithEstimates.reduce((sum, h) => sum + h.profit, 0),
+    todayProfit: holdingsWithEstimates.reduce((sum, h) => sum + h.todayProfit, 0),
+    holdingCount: holdings.length
+  };
+  
+  const totalProfitRate = summary.totalCost > 0 
+    ? (summary.totalProfit / summary.totalCost) * 100 
+    : 0;
+
+  const isProfit = summary.totalProfit >= 0;
+  const isTodayProfit = summary.todayProfit >= 0;
+
+  // 初始加载
   useEffect(() => {
     setMounted(true);
     fetchHoldings();
   }, [fetchHoldings]);
 
-  // 计算汇总数据
-  const summary = analysis?.summary || {
-    totalAssets: holdings.reduce((sum, h) => sum + (h.totalShares * (h.avgCost || 0)), 0),
-    totalCost: holdings.reduce((sum, h) => sum + (h.totalShares * h.avgCost), 0),
-    totalProfit: 0,
-    totalProfitRate: 0,
-    todayProfit: 0,
-    holdingCount: holdings.length
-  };
+  // 加载估值数据
+  const loadEstimates = useCallback(async () => {
+    if (holdings.length === 0) return;
+    
+    setIsRefreshing(true);
+    try {
+      const fundCodes = holdings.map(h => h.fundId);
+      const estimatesMap = await getBatchEstimates(fundCodes);
+      setEstimates(estimatesMap);
+    } catch (error) {
+      console.error("加载估值失败:", error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [holdings]);
 
-  const isProfit = summary.totalProfit >= 0;
-  const isTodayProfit = summary.todayProfit >= 0;
+  // 加载估值
+  useEffect(() => {
+    loadEstimates();
+  }, [loadEstimates]);
+
+  // 添加持仓
+  const handleAddHolding = async (data: {
+    fundId: string;
+    fundName: string;
+    shares: number;
+    avgCost: number;
+    channel?: string;
+  }) => {
+    await holdingDb.create({
+      fundId: data.fundId,
+      fundName: data.fundName,
+      totalShares: data.shares,
+      avgCost: data.avgCost,
+      totalCost: data.shares * data.avgCost,
+      channel: data.channel,
+      version: 1
+    });
+    await fetchHoldings();
+  };
 
   if (!mounted) {
     return <div className="min-h-screen bg-gray-50" />;
@@ -59,13 +133,13 @@ export default function HomePage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => fetchHoldings()}
-                disabled={isLoading}
+                onClick={loadEstimates}
+                disabled={isRefreshing || holdings.length === 0}
               >
-                <RefreshCw className={cn("w-4 h-4 mr-1", isLoading && "animate-spin")} />
-                刷新
+                <RefreshCw className={cn("w-4 h-4 mr-1", isRefreshing && "animate-spin")} />
+                {isRefreshing ? "更新中" : "刷新估值"}
               </Button>
-              <Button size="sm">
+              <Button size="sm" onClick={() => setIsModalOpen(true)}>
                 <Plus className="w-4 h-4 mr-1" />
                 添加持仓
               </Button>
@@ -115,7 +189,7 @@ export default function HomePage() {
                 "text-sm font-medium",
                 isProfit ? "text-red-500" : "text-green-500"
               )}>
-                {isProfit ? "+" : ""}{formatNumber(summary.totalProfitRate)}%
+                {isProfit ? "+" : ""}{formatNumber(totalProfitRate)}%
               </p>
             </CardContent>
           </Card>
@@ -123,7 +197,7 @@ export default function HomePage() {
           {/* 今日收益 */}
           <Card>
             <CardHeader className="pb-2">
-              <CardDescription>今日收益</CardDescription>
+              <CardDescription>今日预估收益</CardDescription>
               <CardTitle className={cn(
                 "text-3xl font-mono",
                 isTodayProfit ? "text-red-500" : "text-green-500"
@@ -133,7 +207,7 @@ export default function HomePage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-500">
-                实时估值仅供参考
+                基于实时估值
               </p>
             </CardContent>
           </Card>
@@ -145,7 +219,7 @@ export default function HomePage() {
             <h2 className="text-lg font-semibold">我的持仓</h2>
             {holdings.length > 0 && (
               <span className="text-sm text-gray-500">
-                共 {holdings.length} 只基金
+                持有 {holdings.length} 只基金
               </span>
             )}
           </div>
@@ -168,7 +242,7 @@ export default function HomePage() {
                 <p className="text-gray-500 mb-4">
                   添加您的第一只基金持仓，开始跟踪投资收益
                 </p>
-                <Button>
+                <Button onClick={() => setIsModalOpen(true)}>
                   <Plus className="w-4 h-4 mr-1" />
                   添加持仓
                 </Button>
@@ -176,15 +250,10 @@ export default function HomePage() {
             </Card>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {holdings.map((holding) => (
+              {holdingsWithEstimates.map((holding) => (
                 <FundCard
                   key={holding.id}
-                  holding={{
-                    ...holding,
-                    marketValue: holding.totalShares * (holding.avgCost || 0),
-                    profit: 0,
-                    profitRate: 0
-                  }}
+                  holding={holding}
                 />
               ))}
             </div>
@@ -196,10 +265,22 @@ export default function HomePage() {
           <p className="text-sm text-amber-800">
             <span className="font-medium">⚠️ 风险提示：</span>
             本页面展示的基金估值数据仅供参考，实际净值以基金公司官方披露为准。
-            市场有风险，投资需谨慎。过往业绩不代表未来表现。
+            市场有风险，投资需谨慎。
           </p>
         </div>
       </div>
+
+      {/* 添加持仓弹窗 */}
+      <AddHoldingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAdd={handleAddHolding}
+      />
     </main>
   );
+}
+
+// shadcn Card 样式兼容
+function CardDescription({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <p className={cn("text-sm text-gray-500", className)}>{children}</p>;
 }
