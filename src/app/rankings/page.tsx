@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn, formatNumber } from "@/lib/utils";
-import { ArrowLeft, Trophy, TrendingUp, TrendingDown, Flame, Clock } from "lucide-react";
+import { ArrowLeft, Trophy, TrendingUp, TrendingDown, Flame, Clock, GitCompare } from "lucide-react";
+import Link from "next/link";
 import type { FundEstimate } from "@/types";
 
 // 模拟排行榜数据
@@ -58,20 +59,28 @@ export default function RankingsPage() {
       {/* 顶部导航 */}
       <header className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.push("/")}
-              className="mr-4"
-            >
-              <ArrowLeft className="w-4 h-4 mr-1" />
-              返回
-            </Button>
-            <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-              <Trophy className="w-6 h-6 text-amber-500" />
-              基金排行榜
-            </h1>
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push("/")}
+                className="mr-4"
+              >
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                返回
+              </Button>
+              <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <Trophy className="w-6 h-6 text-amber-500" />
+                基金排行榜
+              </h1>
+            </div>
+            <Link href="/compare">
+              <Button variant="outline" size="sm">
+                <GitCompare className="w-4 h-4 mr-1" />
+                对比
+              </Button>
+            </Link>
           </div>
         </div>
       </header>

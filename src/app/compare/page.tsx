@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn, formatNumber } from "@/lib/utils";
-import { ArrowLeft, Plus, X, TrendingUp, TrendingDown, Search } from "lucide-react";
+import { ArrowLeft, Plus, X, TrendingUp, TrendingDown, Search, Home, Trophy } from "lucide-react";
+import Link from "next/link";
 import { searchFunds, getFundEstimate } from "@/services/fund";
 import type { Fund, FundEstimate } from "@/types";
 
@@ -90,17 +91,27 @@ export default function ComparePage() {
       {/* 顶部导航 */}
       <header className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.push("/")}
-              className="mr-4"
-            >
-              <ArrowLeft className="w-4 h-4 mr-1" />
-              返回
-            </Button>
-            <h1 className="text-xl font-bold text-gray-900">基金对比</h1>
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push("/")}
+                className="mr-4"
+              >
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                返回
+              </Button>
+              <h1 className="text-xl font-bold text-gray-900">基金对比</h1>
+            </div>
+            <div className="flex gap-2">
+              <Link href="/rankings">
+                <Button variant="outline" size="sm">
+                  <Trophy className="w-4 h-4 mr-1" />
+                  排行
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
