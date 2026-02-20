@@ -7,6 +7,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import type { ApiResponse, FundEstimate } from "@/types";
+import { getFundEstimateFromEastMoney } from "@/lib/eastmoney-api";
 
 export async function GET(
   request: NextRequest,
@@ -15,26 +16,22 @@ export async function GET(
   try {
     const { code } = params;
 
-    // TODO: 集成天天基金估值 API
-    // https://fundmobapi.eastmoney.com/FundMApi/FundBase.ashx?FCODE={code}
+    if (!code || !/^\d{6}$/.test(code)) {
+      return NextResponse.json({
+        success: false,
+        error: { 
+          code: "INVALID_PARAMS", 
+          message: "基金代码格式错误，应为6位数字" 
+        }
+      }, { status: 400 });
+    }
 
-    // 返回模拟数据
-    const mockEstimate: FundEstimate = {
-      fundId: code,
-      fundName: "银河创新成长混合A",
-      estimateNav: 5.2891,
-      estimateTime: "2024-02-20 15:00:00",
-      estimateChange: 0.0546,
-      estimateChangePercent: 1.04,
-      lastNav: 5.2345,
-      lastNavDate: "2024-02-19",
-      source: "eastmoney",
-      cached: false
-    };
+    // 调用天天基金估值API
+    const estimate = await getFundEstimateFromEastMoney(code);
 
     return NextResponse.json({
       success: true,
-      data: mockEstimate,
+      data: estimate,
       meta: { 
         cached: false, 
         timestamp: new Date().toISOString(),
@@ -43,10 +40,11 @@ export async function GET(
     });
 
   } catch (error) {
+    console.error(`获取基金 ${params.code} 估值失败:`, error);
     return NextResponse.json({
       success: false,
       error: { 
-        code: "INTERNAL_ERROR", 
+        code: "API_ERROR", 
         message: (error as Error).message 
       }
     }, { status: 500 });
