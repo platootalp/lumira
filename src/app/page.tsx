@@ -7,6 +7,7 @@ import { FundCard } from "@/components/fund-card";
 import { AddHoldingModal } from "@/components/add-holding-modal";
 import { PortfolioChart } from "@/components/portfolio-chart";
 import { DataImportExport } from "@/components/data-import-export";
+import { SIPCalculator } from "@/components/sip-calculator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePortfolioStore } from "@/stores/portfolio";
 import { holdingDb } from "@/lib/db";
@@ -260,6 +261,9 @@ export default function HomePage() {
             </CardContent>
           </Card>
         )}
+
+        {/* 定投计算器 */}
+        <SIPCalculator className="mb-6" />
 
         {/* 持仓列表 */}
         <div>
