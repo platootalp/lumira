@@ -1,6 +1,7 @@
 "use client";
 
 import React, { memo } from "react";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import type { HoldingWithEstimate } from "@/types";
 import { formatNumber, cn } from "@/lib/utils";
@@ -26,13 +27,15 @@ export const FundCard = memo(function FundCard({
   const isTodayProfit = (holding.todayProfit || 0) >= 0;
   
   return (
-    <Card 
+    <Link 
+      href={`/fund/${holding.fundId}`}
       className={cn(
-        "cursor-pointer transition-shadow hover:shadow-md",
+        "block cursor-pointer transition-shadow hover:shadow-md",
         className
       )}
       onClick={onClick}
     >
+    <Card>
       <CardContent className="p-4">
         <div className="flex justify-between items-start">
           {/* 基金信息 */}
@@ -87,5 +90,6 @@ export const FundCard = memo(function FundCard({
         )}
       </CardContent>
     </Card>
+    </Link>
   );
 });
