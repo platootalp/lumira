@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FundCard } from "@/components/fund-card";
 import { AddHoldingModal } from "@/components/add-holding-modal";
+import { PortfolioChart } from "@/components/portfolio-chart";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePortfolioStore } from "@/stores/portfolio";
 import { holdingDb } from "@/lib/db";
 import { getBatchEstimates, calculateEstimateProfit } from "@/services/fund";
@@ -212,6 +214,42 @@ export default function HomePage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* 图表区域 */}
+        {holdings.length > 0 && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>图表分析</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="allocation">
+                <TabsList className="mb-4">
+                  <TabsTrigger value="allocation">资产配置</TabsTrigger>
+                  <TabsTrigger value="profit">收益分布</TabsTrigger>
+                  <TabsTrigger value="trend">收益走势</TabsTrigger>
+                </TabsList>
+                <TabsContent value="allocation">
+                  <PortfolioChart
+                    holdings={holdingsWithEstimates}
+                    type="allocation"
+                  />
+                </TabsContent>
+                <TabsContent value="profit">
+                  <PortfolioChart
+                    holdings={holdingsWithEstimates}
+                    type="profit"
+                  />
+                </TabsContent>
+                <TabsContent value="trend">
+                  <PortfolioChart
+                    holdings={holdingsWithEstimates}
+                    type="trend"
+                  />
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        )}
 
         {/* 持仓列表 */}
         <div>
