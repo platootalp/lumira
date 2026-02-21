@@ -5,12 +5,12 @@ import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PortfolioChart } from "@/components/portfolio-chart";
 import { holdingDb, transactionDb } from "@/lib/db";
 import { getFundEstimate, fetchNavHistory } from "@/services/fund";
 import { formatNumber, cn } from "@/lib/utils";
 import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Plus } from "lucide-react";
 import { TransactionForm } from "@/components/transaction-form";
+import { NavHistoryChart } from "@/components/charts/NavHistoryChart";
 
 import type { Holding, Transaction, FundEstimate } from "@/types";
 
@@ -32,34 +32,34 @@ export default function FundDetailPage() {
   const [showTransactionForm, setShowTransactionForm] = useState(false);
 
   // 加载数据
-  useEffect(() => {
-    const loadData = async () => {
-      setIsLoading(true);
-      try {
-        // 获取持仓
-        const holdings = await holdingDb.getByFundId(fundCode);
-        if (holdings.length > 0) {
-          setHolding(holdings[0]);
-          
-          // 获取交易记录
-          const txs = await transactionDb.getByFundId(fundCode);
-          setTransactions(txs);
-        }
-        
-        // 获取估值
-        const est = await getFundEstimate(fundCode);
-        setEstimate(est);
-        
-        // 获取净值历史
-        const history = await fetchNavHistory(fundCode, 90);
-        setNavHistory(history.history || []);
-      } catch (error) {
-        console.error("加载基金详情失败:", error);
-      } finally {
-        setIsLoading(false);
+  const loadData = async () => {
+    setIsLoading(true);
+    try {
+      // 获取持仓
+      const holdings = await holdingDb.getByFundId(fundCode);
+      if (holdings.length > 0) {
+        setHolding(holdings[0]);
+
+        // 获取交易记录
+        const txs = await transactionDb.getByFundId(fundCode);
+        setTransactions(txs);
       }
-    };
-    
+
+      // 获取估值
+      const est = await getFundEstimate(fundCode);
+      setEstimate(est);
+
+      // 获取净值历史
+      const history = await fetchNavHistory(fundCode, 90);
+      setNavHistory(history.history || []);
+    } catch (error) {
+      console.error("加载基金详情失败:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (fundCode) {
       loadData();
     }
@@ -228,14 +228,15 @@ export default function FundDetailPage() {
           <TabsContent value="history" className="mt-4">
             <Card>
               <CardHeader>
-                <CardTitle>近3月净值走势</CardTitle>
+                <CardTitle>净值走势</CardTitle>
               </CardHeader>
               <CardContent>
                 {navHistory.length > 0 ? (
-                  <div className="h-[300px]">
-                    {/* TODO: 添加净值走势图 */}
-                    <p className="text-gray-500">净值数据已加载 ({navHistory.length}条)</p>
-                  </div>
+                  <NavHistoryChart
+                    data={navHistory}
+                    estimateNav={estimate?.estimateNav}
+                    estimateTime={estimate?.estimateTime}
+                  />
                 ) : (
                   <p className="text-gray-500">暂无净值历史数据</p>
                 )}
