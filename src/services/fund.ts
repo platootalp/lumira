@@ -139,6 +139,22 @@ export async function fetchNavHistory(
   }
 }
 
+/**
+ * 获取基金昨日净值
+ */
+export async function getFundYesterdayNav(fundCode: string): Promise<number | null> {
+  try {
+    const history = await fetchNavHistory(fundCode, 2);
+    if (history.history.length >= 2) {
+      return history.history[history.history.length - 2].nav;
+    }
+    return null;
+  } catch (error) {
+    console.error("获取昨日净值失败:", error);
+    return null;
+  }
+}
+
 // ==================== 工具函数 ====================
 
 /**
@@ -147,7 +163,8 @@ export async function fetchNavHistory(
 export function calculateEstimateProfit(
   shares: number,
   avgCost: number,
-  estimateNav: number
+  estimateNav: number,
+  yesterdayNav?: number | null
 ): {
   marketValue: number;
   profit: number;
@@ -158,14 +175,16 @@ export function calculateEstimateProfit(
   const cost = shares * avgCost;
   const profit = marketValue - cost;
   const profitRate = cost > 0 ? (profit / cost) * 100 : 0;
-  
-  // TODO: 计算今日收益需要昨日净值
-  const todayProfit = 0;
-  
+
+  let todayProfit = 0;
+  if (yesterdayNav && yesterdayNav > 0) {
+    todayProfit = shares * (estimateNav - yesterdayNav);
+  }
+
   return {
     marketValue: Math.round(marketValue * 100) / 100,
     profit: Math.round(profit * 100) / 100,
     profitRate: Math.round(profitRate * 100) / 100,
-    todayProfit: Math.round(todayProfit * 100) / 100
+    todayProfit: Math.round(todayProfit * 100) / 100,
   };
 }
