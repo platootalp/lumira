@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useCallback } from "react";
 import { searchFunds } from "@/services/fund";
-import { holdingDb } from "@/lib/db";
+import { useCreateHolding } from "@/hooks/use-holdings";
 import type { Fund } from "@/types";
 import { debounce } from "@/lib/utils";
 import { Search, Loader2, Check } from "lucide-react";
@@ -27,6 +27,7 @@ const CHANNEL_OPTIONS = [
  */
 export function SearchTab({ onSuccess }: SearchTabProps) {
   const { showToast } = useToast();
+  const createHolding = useCreateHolding();
   const [step, setStep] = useState<"search" | "form">("search");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Fund[]>([]);
@@ -35,7 +36,6 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
   const [shares, setShares] = useState("");
   const [avgCost, setAvgCost] = useState("");
   const [channel, setChannel] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 防抖搜索
   const debouncedSearch = useRef(
@@ -108,9 +108,8 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
       return;
     }
 
-    setIsSubmitting(true);
     try {
-      await holdingDb.create({
+      await createHolding.mutateAsync({
         fundId: selectedFund.id,
         fundName: selectedFund.name,
         fundType: selectedFund.type,
@@ -144,8 +143,6 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
         title: "保存失败",
         message: "保存持仓失败: " + (error as Error).message,
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -308,10 +305,10 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
             </button>
             <button
               type="submit"
-              disabled={isSubmitting || !shares || !avgCost}
+              disabled={createHolding.isPending || !shares || !avgCost}
               className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
             >
-              {isSubmitting ? (
+              {createHolding.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-1 animate-spin" />
                   保存中...

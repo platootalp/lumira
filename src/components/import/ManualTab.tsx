@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { fundDb, holdingDb } from "@/lib/db";
+import { useCreateHolding } from "@/hooks/use-holdings";
 import type { FundType } from "@/types";
 import { useToast } from "@/components/ui/toast";
 
@@ -50,8 +50,8 @@ const initialFormData: FormData = {
 
 export function ManualTab({ onSuccess }: ManualTabProps) {
   const { showToast } = useToast();
+  const createHolding = useCreateHolding();
   const [formData, setFormData] = useState<FormData>(initialFormData);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
 
   const totalCost = useMemo(() => {
@@ -109,36 +109,12 @@ export function ManualTab({ onSuccess }: ManualTabProps) {
       return;
     }
 
-    setIsSubmitting(true);
-
     try {
       const shares = parseFloat(formData.shares);
       const avgCost = parseFloat(formData.avgCost);
       const calculatedTotalCost = shares * avgCost;
 
-      // Step 1: Save fund info to fundDb
-      const now = new Date();
-      await fundDb.put({
-        id: formData.fundCode,
-        name: formData.fundName,
-        type: formData.fundType,
-        riskLevel: "MEDIUM",
-        company: "",
-        managerId: "",
-        nav: 0,
-        accumNav: 0,
-        navDate: now.toISOString().split("T")[0],
-        feeRate: {
-          buy: 0,
-          sell: 0,
-          management: 0,
-        },
-        createdAt: now,
-        updatedAt: now,
-      });
-
-      // Step 2: Save holding to holdingDb
-      await holdingDb.create({
+      await createHolding.mutateAsync({
         fundId: formData.fundCode,
         fundName: formData.fundName,
         fundType: formData.fundType,
@@ -167,8 +143,6 @@ export function ManualTab({ onSuccess }: ManualTabProps) {
         title: "保存失败",
         message: "保存失败，请重试",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -314,10 +288,10 @@ export function ManualTab({ onSuccess }: ManualTabProps) {
       <div className="pt-4">
         <Button
           type="submit"
-          disabled={isSubmitting}
+          disabled={createHolding.isPending}
           className="w-full"
         >
-          {isSubmitting ? "保存中..." : "添加基金"}
+          {createHolding.isPending ? "保存中..." : "添加基金"}
         </Button>
       </div>
     </form>

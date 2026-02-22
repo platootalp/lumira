@@ -3,13 +3,21 @@
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { exportAllData, importAllData } from "@/lib/db";
+import { useHoldings, useCreateHolding } from "@/hooks/use-holdings";
+import { useTransactions } from "@/hooks/use-transactions";
 import { downloadFile, readFile } from "@/lib/utils";
 import { Upload, FileJson, FileSpreadsheet, AlertTriangle, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { Holding } from "@/types";
 
 interface DataImportExportProps {
   onImportSuccess?: () => void;
+}
+
+interface ExportData {
+  holdings: Holding[];
+  transactions: unknown[];
+  exportDate: string;
 }
 
 /**
@@ -22,13 +30,22 @@ export function DataImportExport({ onImportSuccess }: DataImportExportProps) {
   const [isImporting, setIsImporting] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // React Query hooks
+  const { data: holdings } = useHoldings();
+  const { data: transactionsData } = useTransactions();
+  const createHolding = useCreateHolding();
 
   // 导出 JSON
   const handleExportJSON = async () => {
     setIsExporting(true);
     setMessage(null);
     try {
-      const data = await exportAllData();
+      const data: ExportData = {
+        holdings: holdings || [],
+        transactions: transactionsData?.transactions || [],
+        exportDate: new Date().toISOString(),
+      };
       const jsonStr = JSON.stringify(data, null, 2);
       const timestamp = new Date().toISOString().split("T")[0];
       downloadFile(jsonStr, `lumira-backup-${timestamp}.json`, "application/json");
@@ -45,11 +62,11 @@ export function DataImportExport({ onImportSuccess }: DataImportExportProps) {
     setIsExporting(true);
     setMessage(null);
     try {
-      const data = await exportAllData();
+      const holdingsList = holdings || [];
       
       // 生成持仓 CSV
       const headers = ["基金代码", "基金名称", "持有份额", "平均成本", "总成本", "购买渠道", "分组"];
-      const rows = data.holdings.map(h => [
+      const rows = holdingsList.map((h: Holding) => [
         h.fundId,
         h.fundName,
         h.totalShares,
@@ -59,7 +76,7 @@ export function DataImportExport({ onImportSuccess }: DataImportExportProps) {
         h.group || ""
       ]);
       
-      const csv = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+      const csv = [headers.join(","), ...rows.map((r: (string | number)[]) => r.join(","))].join("\n");
       const timestamp = new Date().toISOString().split("T")[0];
       
       // BOM 解决中文乱码
@@ -95,8 +112,23 @@ export function DataImportExport({ onImportSuccess }: DataImportExportProps) {
       if (file.name.endsWith(".json")) {
         // JSON 导入
         const data = JSON.parse(content);
-        await importAllData(data);
-        setMessage({ type: "success", text: `成功导入 ${data.holdings?.length || 0} 条持仓数据！` });
+        const holdingsToImport = data.holdings || [];
+        
+        // Create holdings one by one
+        for (const holding of holdingsToImport) {
+          await createHolding.mutateAsync({
+            fundId: holding.fundId,
+            fundName: holding.fundName,
+            fundType: holding.fundType || "STOCK",
+            totalShares: holding.totalShares,
+            avgCost: holding.avgCost,
+            totalCost: holding.totalCost,
+            ...(holding.channel ? { channel: holding.channel } : {}),
+            ...(holding.group ? { group: holding.group } : {}),
+          });
+        }
+        
+        setMessage({ type: "success", text: `成功导入 ${holdingsToImport.length} 条持仓数据！` });
         onImportSuccess?.();
       } else if (file.name.endsWith(".csv")) {
         // CSV 导入
@@ -104,7 +136,7 @@ export function DataImportExport({ onImportSuccess }: DataImportExportProps) {
         const headers = lines[0].split(",").map(h => h.trim().replace(/^\ufeff/, ""));
         
         // 解析 CSV
-        const holdings = [];
+        const holdingsToImport = [];
         for (let i = 1; i < lines.length; i++) {
           if (!lines[i].trim()) continue;
           
@@ -115,25 +147,37 @@ export function DataImportExport({ onImportSuccess }: DataImportExportProps) {
           });
           
           if (row["基金代码"] && row["基金名称"]) {
-            const holding: any = {
-              id: crypto.randomUUID(),
+            const totalShares = parseFloat(row["持有份额"]) || 0;
+            const avgCost = parseFloat(row["平均成本"]) || 0;
+            const totalCost = parseFloat(row["总成本"]) || (totalShares * avgCost);
+            
+            holdingsToImport.push({
               fundId: row["基金代码"],
               fundName: row["基金名称"],
-              totalShares: parseFloat(row["持有份额"]) || 0,
-              avgCost: parseFloat(row["平均成本"]) || 0,
-              totalCost: parseFloat(row["总成本"]) || (parseFloat(row["持有份额"]) || 0) * (parseFloat(row["平均成本"]) || 0),
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              version: 1
-            };
-            if (row["购买渠道"]) holding.channel = row["购买渠道"];
-            if (row["分组"]) holding.group = row["分组"];
-            holdings.push(holding);
+              totalShares,
+              avgCost,
+              totalCost,
+              channel: row["购买渠道"] || undefined,
+              group: row["分组"] || undefined,
+            });
           }
         }
         
-        await importAllData({ holdings, transactions: [], settings: {} as any });
-        setMessage({ type: "success", text: `成功导入 ${holdings.length} 条持仓数据！` });
+        // Create holdings one by one
+        for (const holding of holdingsToImport) {
+          await createHolding.mutateAsync({
+            fundId: holding.fundId,
+            fundName: holding.fundName,
+            fundType: "STOCK",
+            totalShares: holding.totalShares,
+            avgCost: holding.avgCost,
+            totalCost: holding.totalCost,
+            ...(holding.channel ? { channel: holding.channel } : {}),
+            ...(holding.group ? { group: holding.group } : {}),
+          });
+        }
+        
+        setMessage({ type: "success", text: `成功导入 ${holdingsToImport.length} 条持仓数据！` });
         onImportSuccess?.();
       }
     } catch (error) {
@@ -196,11 +240,11 @@ export function DataImportExport({ onImportSuccess }: DataImportExportProps) {
           <Button
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
-            disabled={isImporting}
+            disabled={isImporting || createHolding.isPending}
             className="flex items-center gap-2 w-full justify-center"
           >
             <Upload className="w-4 h-4" />
-            {isImporting ? "导入中..." : "选择文件导入 (JSON/CSV)"}
+            {isImporting || createHolding.isPending ? "导入中..." : "选择文件导入 (JSON/CSV)"}
           </Button>
           <p className="text-xs text-gray-500 mt-2">
             支持从其他基金App导出的数据（需符合格式）
