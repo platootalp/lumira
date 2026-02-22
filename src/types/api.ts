@@ -1,4 +1,4 @@
-import type { Transaction, PortfolioSummary, AssetAllocation, TopHolding } from './index';
+import type { Transaction, PortfolioSummary, AssetAllocation } from './index';
 
 export interface ApiSuccessResponse<T> {
   success: true;
@@ -128,5 +128,11 @@ export interface PortfolioSummaryResponse extends PortfolioSummary {}
 export interface PortfolioAllocationResponse extends AssetAllocation {}
 
 export interface HoldingsRankingResponse {
-  holdings: TopHolding[];
+  fundId: string;
+  fundName: string;
+  profit: number;
+  profitRate: number;
+  contribution: number;
+  marketValue: number;
+  percentage: number;
 }

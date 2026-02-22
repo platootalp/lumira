@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { cn, formatNumber } from "@/lib/utils";
-import { ArrowLeft, Plus, X, TrendingUp, TrendingDown, Search, Home, Trophy } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ArrowLeft, Plus, X, TrendingUp, Search, Trophy } from "lucide-react";
 import Link from "next/link";
 import { searchFunds, getFundEstimate } from "@/services/fund";
 import type { Fund, FundEstimate } from "@/types";
@@ -24,7 +24,7 @@ export default function ComparePage() {
   const [selectedFunds, setSelectedFunds] = useState<CompareFund[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Fund[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const [_isSearching, setIsSearching] = useState(false);
 
   const maxCompare = 5;
 
@@ -70,21 +70,6 @@ export default function ComparePage() {
   const removeFund = (fundId: string) => {
     setSelectedFunds(selectedFunds.filter(f => f.id !== fundId));
   };
-
-  // 对比指标数据
-  const compareData = [
-    { label: "最新净值", key: "nav", format: (v: number) => v?.toFixed(4) || "-" },
-    { label: "实时估值", key: "estimateNav", format: (v: number) => v?.toFixed(4) || "-" },
-    { label: "估算涨跌幅", key: "estimateChangePercent", format: (v: number) => 
-      v ? `${v >= 0 ? "+" : ""}${v.toFixed(2)}%` : "-" 
-    },
-    { label: "基金类型", key: "type", format: (v: string) => v || "-" },
-    { label: "风险等级", key: "riskLevel", format: (v: string) => v || "-" },
-    { label: "基金公司", key: "company", format: (v: string) => v || "-" },
-    { label: "管理费率", key: "managementFee", format: (v: number) => 
-      v ? `${(v * 100).toFixed(2)}%` : "-" 
-    },
-  ];
 
   return (
     <main className="min-h-screen bg-gray-50">

@@ -10,7 +10,7 @@ import type { ApiResponse, FundEstimate } from "@/types";
 import { getFundEstimateFromEastMoney } from "@/lib/eastmoney-api";
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { code: string } }
 ): Promise<NextResponse<ApiResponse<FundEstimate>>> {
   try {

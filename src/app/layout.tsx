@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { Sidebar, MobileSidebar } from "@/components/layout/Sidebar";
+import { ToastProvider } from "@/components/ui/toast";
 
 export const metadata: Metadata = {
   title: "Lumira - 基金投资助手",
@@ -15,7 +17,19 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body className="min-h-screen bg-gray-50">
-        <ErrorBoundary>{children}</ErrorBoundary>
+        <ToastProvider>
+          <ErrorBoundary>
+            <div className="flex h-screen">
+              <div className="hidden lg:block">
+                <Sidebar />
+              </div>
+              <MobileSidebar />
+              <main className="flex-1 lg:ml-60 overflow-auto">
+                {children}
+              </main>
+            </div>
+          </ErrorBoundary>
+        </ToastProvider>
       </body>
     </html>
   );

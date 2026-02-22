@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { searchFunds } from "@/services/fund";
 import type { Fund } from "@/types";
-import { cn, debounce } from "@/lib/utils";
+import { debounce } from "@/lib/utils";
 import { Search, X, Loader2, Plus } from "lucide-react";
 
 interface AddHoldingModalProps {
@@ -16,7 +16,7 @@ interface AddHoldingModalProps {
     fundName: string;
     shares: number;
     avgCost: number;
-    channel?: string;
+    channel?: string | undefined;
   }) => Promise<void>;
 }
 

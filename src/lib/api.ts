@@ -1,4 +1,4 @@
-import { apiClient } from './api-client';
+import { apiClient, ApiError } from './api-client';
 import type { Holding, Transaction, PortfolioSummary, AssetAllocation, TopHolding } from '@/types';
 import type {
   ApiResponse,
@@ -16,7 +16,11 @@ import type {
 
 async function handleResponse<T>(response: ApiResponse<T>): Promise<T> {
   if (!response.success) {
-    throw new Error(response.error.message);
+    throw new ApiError(
+      response.error.message,
+      400,
+      response.error.code || 'API_ERROR'
+    );
   }
   return response.data;
 }
@@ -41,7 +45,8 @@ export const authApi = {
     if (refreshToken) {
       try {
         await apiClient.post<ApiResponse<void>>('/auth/logout', { refreshToken });
-      } catch {
+      } catch (error) {
+        console.warn('Logout API call failed:', error);
       }
     }
     apiClient.clearTokens();

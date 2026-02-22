@@ -91,9 +91,6 @@ export function PortfolioChart({ holdings, type, className }: PortfolioChartProp
         };
       } else if (type === "profit") {
         // 收益对比柱状图
-        const profitable = holdings.filter(h => h.profit >= 0);
-        const loss = holdings.filter(h => h.profit < 0);
-
         option = {
           tooltip: {
             trigger: "axis",

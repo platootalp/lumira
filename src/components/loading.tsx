@@ -5,9 +5,9 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LoadingProps {
-  className?: string;
-  text?: string;
-  size?: "sm" | "md" | "lg";
+  className?: string | undefined;
+  text?: string | undefined;
+  size?: "sm" | "md" | "lg" | undefined;
 }
 
 export function Loading({ className, text = "加载中...", size = "md" }: LoadingProps) {
@@ -28,7 +28,7 @@ export function Loading({ className, text = "加载中...", size = "md" }: Loadi
 export function LoadingOverlay({ className, text }: LoadingProps) {
   return (
     <div className={cn("fixed inset-0 bg-white/80 flex items-center justify-center z-50", className)}>
-      <Loading text={text} size="lg" />
+      <Loading text={text || "加载中..."} size="lg" />
     </div>
   );
 }

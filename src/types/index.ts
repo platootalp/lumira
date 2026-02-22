@@ -3,8 +3,6 @@
 // 基于 PRD 数据模型设计
 // ============================================
 
-import type Decimal from 'decimal.js';
-
 // ----------------------------------------
 // 枚举类型（使用 Union Type）
 // ----------------------------------------
@@ -114,8 +112,8 @@ export interface Holding {
 
 /** 扩展持仓（含实时数据） */
 export interface HoldingWithEstimate extends Holding {
-  estimateNav?: number;          // 实时估值
-  estimateTime?: string;         // 估值时间
+  estimateNav?: number | undefined;          // 实时估值
+  estimateTime?: string | undefined;         // 估值时间
   marketValue: number;           // 市值
   profit: number;                // 盈亏金额
   profitRate: number;            // 盈亏率(%)

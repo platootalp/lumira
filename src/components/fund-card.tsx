@@ -9,13 +9,11 @@ import { TrendingUp, TrendingDown, ArrowRight, Building2 } from "lucide-react";
 
 interface FundCardProps {
   holding: HoldingWithEstimate;
-  onClick?: () => void;
   className?: string;
 }
 
 export const FundCard = memo(function FundCard({
   holding,
-  onClick,
   className
 }: FundCardProps) {
   const isProfit = holding.profit >= 0;

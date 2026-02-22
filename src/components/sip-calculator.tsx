@@ -2,9 +2,8 @@
 
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { formatNumber } from "@/lib/utils";
-import { Calculator, TrendingUp } from "lucide-react";
+import { Calculator } from "lucide-react";
 
 interface SIPCalculatorProps {
   className?: string;

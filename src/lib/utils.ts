@@ -29,7 +29,7 @@ export function delay(ms: number): Promise<void> {
 /**
  * 防抖函数
  */
-export function debounce<T extends (...args: unknown[]) => unknown>(
+export function debounce<T extends (...args: any[]) => any>(
   fn: T,
   delay: number
 ): (...args: Parameters<T>) => void {
@@ -43,7 +43,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 /**
  * 节流函数
  */
-export function throttle<T extends (...args: unknown[]) => unknown>(
+export function throttle<T extends (...args: any[]) => any>(
   fn: T,
   limit: number
 ): (...args: Parameters<T>) => void {

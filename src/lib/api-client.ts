@@ -98,7 +98,12 @@ export class ApiClient {
     const response = await fetch(url, config);
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = { error: { message: response.statusText, code: 'UNKNOWN_ERROR' } };
+      }
       throw new ApiError(
         errorData.error?.message || `HTTP ${response.status}`,
         response.status,
@@ -111,7 +116,12 @@ export class ApiClient {
       return response.json() as Promise<T>;
     }
 
-    return response.text() as Promise<T>;
+    const text = await response.text();
+    try {
+      return JSON.parse(text) as T;
+    } catch {
+      return text as unknown as T;
+    }
   }
 
   async get<T>(endpoint: string, params?: Record<string, string | number | undefined>): Promise<T> {

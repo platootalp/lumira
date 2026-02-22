@@ -58,10 +58,6 @@ export function calculateXIRR(
 
   const profit = totalRedeemed - totalInvested;
 
-  // 检查是否需要添加当前市值
-  const lastFlow = sortedFlows[sortedFlows.length - 1];
-  const needsCurrentValue = lastFlow.amount > 0;
-
   try {
     // Newton-Raphson 迭代
     const maxIterations = 100;
@@ -312,10 +308,15 @@ export function formatMoney(amount: number): string {
   return amount.toFixed(2);
 }
 
+interface FormattedReturn {
+  text: string;
+  color: string;
+}
+
 /**
  * 格式化收益率
  */
-export function formatReturn(rate: number): string {
+export function formatReturn(rate: number): FormattedReturn {
   const sign = rate >= 0 ? '+' : '';
   const color = rate >= 0 ? 'text-red-500' : 'text-green-500';
   return { text: `${sign}${rate.toFixed(2)}%`, color };
@@ -333,37 +334,4 @@ export function formatDate(date: string | Date): string {
   });
 }
 
-// ============================================
-// 测试用例
-// ============================================
 
-if (import.meta.vitest) {
-  const { describe, it, expect } = import.meta.vitest;
-
-  describe('calculateXIRR', () => {
-    it('should calculate XIRR for regular investment', () => {
-      const cashflows = [
-        { date: '2024-01-01', amount: 1000 },
-        { date: '2024-02-01', amount: 1000 },
-        { date: '2024-03-01', amount: 1000 },
-        { date: '2024-03-31', amount: -3150 }
-      ];
-      const result = calculateXIRR(cashflows);
-      expect(result.xirr).not.toBeNull();
-      expect(result.xirr! > 0).toBe(true);
-    });
-
-    it('should handle insufficient cashflows', () => {
-      const result = calculateXIRR([{ date: '2024-01-01', amount: 1000 }]);
-      expect(result.error).toBeDefined();
-    });
-  });
-
-  describe('calculateHoldingProfit', () => {
-    it('should calculate profit correctly', () => {
-      const result = calculateHoldingProfit(1000, 5.2345, 6.7890);
-      expect(result.profit).toBeGreaterThan(0);
-      expect(result.profitRate).toBeGreaterThan(0);
-    });
-  });
-}

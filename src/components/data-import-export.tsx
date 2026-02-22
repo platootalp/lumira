@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { exportAllData, importAllData } from "@/lib/db";
 import { downloadFile, readFile } from "@/lib/utils";
-import { Upload, Download, FileJson, FileSpreadsheet, AlertTriangle, CheckCircle } from "lucide-react";
+import { Upload, FileJson, FileSpreadsheet, AlertTriangle, CheckCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface DataImportExportProps {
   onImportSuccess?: () => void;
@@ -114,15 +115,20 @@ export function DataImportExport({ onImportSuccess }: DataImportExportProps) {
           });
           
           if (row["基金代码"] && row["基金名称"]) {
-            holdings.push({
+            const holding: any = {
+              id: crypto.randomUUID(),
               fundId: row["基金代码"],
               fundName: row["基金名称"],
               totalShares: parseFloat(row["持有份额"]) || 0,
               avgCost: parseFloat(row["平均成本"]) || 0,
               totalCost: parseFloat(row["总成本"]) || (parseFloat(row["持有份额"]) || 0) * (parseFloat(row["平均成本"]) || 0),
-              channel: row["购买渠道"] || undefined,
-              group: row["分组"] || undefined
-            });
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              version: 1
+            };
+            if (row["购买渠道"]) holding.channel = row["购买渠道"];
+            if (row["分组"]) holding.group = row["分组"];
+            holdings.push(holding);
           }
         }
         

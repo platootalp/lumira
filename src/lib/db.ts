@@ -38,12 +38,12 @@ export class LumiraDatabase extends Dexie {
     });
 
     // 添加钩子
-    this.holdings.hook('creating', (primKey, obj) => {
+    this.holdings.hook('creating', (_primKey, obj) => {
       obj.updatedAt = new Date();
       obj.version = (obj.version || 0) + 1;
     });
 
-    this.holdings.hook('updating', (modifications, primKey, obj) => {
+    this.holdings.hook('updating', (modifications, _primKey, obj) => {
       return { ...modifications, updatedAt: new Date(), version: (obj.version || 0) + 1 };
     });
   }
