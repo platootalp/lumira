@@ -14,6 +14,7 @@ import {
   ArrowUpDown,
   Filter
 } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import type { FundEstimate, HoldingWithEstimate } from "@/types";
 
@@ -89,11 +90,11 @@ export default function HoldingsPage() {
   useEffect(() => { loadEstimates(); }, [loadEstimates]);
 
   if (!mounted) {
-    return <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50" />;
+    return <div className="min-h-screen bg-background" />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4 lg:p-8">
+    <div className="min-h-screen bg-background p-4 lg:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-3">
@@ -101,8 +102,8 @@ export default function HoldingsPage() {
               <Wallet className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">持仓明细</h1>
-              <p className="text-sm text-slate-500">
+              <h1 className="text-2xl font-bold text-foreground">持仓明细</h1>
+              <p className="text-sm text-muted-foreground">
                 {summary.holdingCount} 只基金 · 总资产 ¥{formatNumber(summary.totalAssets)}
               </p>
             </div>
@@ -118,20 +119,20 @@ export default function HoldingsPage() {
 
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
               type="text"
               placeholder="搜索基金名称或代码..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="pl-10"
             />
           </div>
           <div className="flex gap-2">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              className="px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring bg-background"
             >
               <option value="marketValue">按市值</option>
               <option value="profitRate">按收益率</option>
@@ -160,19 +161,19 @@ export default function HoldingsPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {[1, 2, 3, 4].map((i) => (
-              <Card key={i} className="h-48 animate-pulse bg-slate-100" />
+              <Card key={i} className="h-48 animate-pulse bg-muted" />
             ))}
           </div>
         ) : holdings.length === 0 ? (
           <Card className="text-center py-16">
             <CardContent>
-              <div className="w-20 h-20 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Wallet className="w-10 h-10 text-slate-400" />
+              <div className="w-20 h-20 bg-muted rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Wallet className="w-10 h-10 text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+              <h3 className="text-xl font-semibold text-foreground mb-2">
                 暂无持仓
               </h3>
-              <p className="text-slate-500 mb-6 max-w-md mx-auto">
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                 添加您的第一只基金持仓，开始跟踪投资收益
               </p>
               <Link
@@ -187,8 +188,8 @@ export default function HoldingsPage() {
         ) : filteredHoldings.length === 0 ? (
           <Card className="text-center py-12">
             <CardContent>
-              <Filter className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-500">没有找到匹配的基金</p>
+              <Filter className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+              <p className="text-muted-foreground">没有找到匹配的基金</p>
             </CardContent>
           </Card>
         ) : (

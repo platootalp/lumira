@@ -40,157 +40,227 @@
     --foreground: 210 40% 98%;
     --card: 222 47% 14%;
     --card-foreground: 210 40% 98%;
+    --popover: 222 47% 14%;
+    --popover-foreground: 210 40% 98%;
     --primary: 217 91% 60%;
     --primary-foreground: 222 47% 11%;
     --secondary: 222 47% 18%;
+    --secondary-foreground: 210 40% 98%;
     --muted: 222 47% 18%;
-    --muted-foreground: 215 20% 65%;
+    --muted-foreground: 215 20% 75%;
+    --accent: 222 47% 18%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 222 47% 25%;
+    --input: 222 47% 25%;
+    --ring: 217 91% 60%;
+    --radius: 0.75rem;
+    
+    /* 基金专用颜色 - Dark Mode */
+    --fund-up: 0 72% 51%;
+    --fund-down: 142 71% 45%;
+    --fund-primary: 217 91% 60%;
+    --fund-success: 142 76% 36%;
+    --fund-warning: 38 92% 50%;
+    --fund-gold: 45 93% 47%;
   }
-}
 
+}
 @layer base {
   * {
-    border-color: hsl(var(--border) / 0.1);
+    border-color: hsl(var(--border));
   }
   body {
-    @apply bg-gradient-to-br from-slate-50 via-white to-blue-50 antialiased;
+    background-color: hsl(var(--background));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     color: hsl(var(--foreground));
   }
 }
 
 @layer components {
-  /* 玻璃拟态卡片 */
+  /* 玻璃拟态卡片 - 支持深色模式 */
   .glass-card {
-    @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-xl shadow-slate-200/50 rounded-2xl;
+    @apply backdrop-blur-xl border shadow-xl rounded-2xl;
+    background-color: hsl(var(--card) / 0.7);
+    border-color: hsl(var(--border) / 0.5);
   }
   
-  /* 渐变卡片 */
+  .dark .glass-card {
+    background-color: hsl(var(--card) / 0.8);
+    border-color: hsl(var(--border) / 0.3);
+  }
+  
+  /* 渐变卡片 - 支持深色模式 */
   .gradient-card {
-    @apply bg-gradient-to-br from-white to-slate-50 border border-slate-100 shadow-lg shadow-slate-200/50 rounded-2xl;
+    @apply border shadow-lg rounded-2xl;
+    background: linear-gradient(to bottom right, hsl(var(--card)), hsl(var(--muted)));
+    border-color: hsl(var(--border) / 0.5);
   }
   
-  /* 主按钮 */
+  /* 主按钮 - 支持深色模式 */
   .btn-primary {
-    @apply bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 
-           text-white font-medium px-6 py-2.5 rounded-xl shadow-lg shadow-blue-500/25 
-           transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/30 
-           hover:-translate-y-0.5 active:translate-y-0;
+    @apply font-medium px-6 py-2.5 rounded-xl transition-all duration-200;
+    background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary) / 0.9));
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 10px 25px -5px hsl(var(--primary) / 0.25);
   }
   
-  /* 次按钮 */
+  .btn-primary:hover {
+    background: linear-gradient(to right, hsl(var(--primary) / 0.9), hsl(var(--primary) / 0.8));
+    box-shadow: 0 20px 35px -10px hsl(var(--primary) / 0.3);
+    transform: translateY(-1px);
+  }
+  
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  
+  /* 次按钮 - 支持深色模式 */
   .btn-secondary {
-    @apply bg-white hover:bg-slate-50 text-slate-700 font-medium px-6 py-2.5 
-           rounded-xl border border-slate-200 shadow-sm shadow-slate-200/50
-           transition-all duration-200 hover:shadow-md hover:border-slate-300
-           hover:-translate-y-0.5 active:translate-y-0;
+    @apply font-medium px-6 py-2.5 rounded-xl transition-all duration-200;
+    background-color: hsl(var(--card));
+    color: hsl(var(--foreground));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 1px 3px 0 hsl(var(--foreground) / 0.05);
   }
   
-  /* 收益数字样式 */
+  .btn-secondary:hover {
+    background-color: hsl(var(--accent));
+    border-color: hsl(var(--border) / 0.8);
+    box-shadow: 0 4px 6px -1px hsl(var(--foreground) / 0.1);
+    transform: translateY(-1px);
+  }
+  
+  .btn-secondary:active {
+    transform: translateY(0);
+  }
+  
+  /* 收益数字样式 - 使用 CSS 变量 */
   .profit-up {
-    @apply text-red-500 font-semibold;
+    @apply font-semibold;
+    color: hsl(var(--fund-up));
   }
-  
   .profit-down {
-    @apply text-emerald-500 font-semibold;
+    @apply font-semibold;
+    color: hsl(var(--fund-down));
   }
-  
   /* 金额字体 */
   .amount-display {
     @apply font-mono tabular-nums tracking-tight;
   }
   
-  /* 标签样式 */
+  /* 标签样式 - 支持深色模式 */
   .tag {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-           bg-slate-100 text-slate-700 border border-slate-200;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border;
+    background-color: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    border-color: hsl(var(--border));
   }
-  
   .tag-primary {
-    @apply bg-blue-50 text-blue-700 border-blue-100;
+    background-color: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+    border-color: hsl(var(--primary) / 0.2);
   }
-  
   .tag-success {
-    @apply bg-emerald-50 text-emerald-700 border-emerald-100;
+    background-color: hsl(var(--fund-down) / 0.1);
+    color: hsl(var(--fund-down));
+    border-color: hsl(var(--fund-down) / 0.2);
   }
-  
   .tag-danger {
-    @apply bg-red-50 text-red-700 border-red-100;
+    background-color: hsl(var(--fund-up) / 0.1);
+    color: hsl(var(--fund-up));
+    border-color: hsl(var(--fund-up) / 0.2);
   }
-  
   .tag-gold {
-    @apply bg-amber-50 text-amber-700 border-amber-100;
+    background-color: hsl(var(--fund-gold) / 0.1);
+    color: hsl(var(--fund-gold));
+    border-color: hsl(var(--fund-gold) / 0.2);
   }
   
-  /* 导航样式 */
+  /* 导航样式 - 支持深色模式 */
   .nav-link {
-    @apply text-slate-600 hover:text-slate-900 font-medium transition-colors 
-           px-4 py-2 rounded-xl hover:bg-slate-100;
+    @apply font-medium transition-colors px-4 py-2 rounded-xl;
+    color: hsl(var(--muted-foreground));
   }
   
+  .nav-link:hover {
+    color: hsl(var(--foreground));
+    background-color: hsl(var(--accent));
+  }
   .nav-link-active {
-    @apply text-blue-600 bg-blue-50;
+    @apply bg-primary/10;
+    color: hsl(var(--primary));
   }
   
-  /* 输入框样式 */
+  /* 输入框样式 - 支持深色模式 */
   .input-field {
-    @apply w-full px-4 py-3 bg-white border border-slate-200 rounded-xl 
-           focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500
-           transition-all duration-200 placeholder:text-slate-400;
+    @apply w-full px-4 py-3 rounded-xl transition-all duration-200;
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
   }
   
-  /* 悬停卡片效果 */
+  .input-field::placeholder {
+    color: hsl(var(--muted-foreground) / 0.6);
+  }
+  
+  .input-field:focus {
+    @apply outline-none;
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+  }
+  
+  /* 悬停卡片效果 - 支持深色模式 */
   .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl;
+    @apply transition-all duration-300 hover:-translate-y-1;
   }
   
+  .hover-lift:hover {
+    box-shadow: 0 20px 25px -5px hsl(var(--foreground) / 0.1);
+  }
   /* 动画 */
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  
   @keyframes slideIn {
     from { opacity: 0; transform: translateX(-10px); }
     to { opacity: 1; transform: translateX(0); }
   }
-  
   @keyframes pulse-soft {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
   }
-  
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out;
   }
-  
   .animate-slide-in {
     animation: slideIn 0.3s ease-out;
   }
-  
   .animate-pulse-soft {
     animation: pulse-soft 2s ease-in-out infinite;
   }
 }
 
-/* 自定义滚动条 */
+/* 自定义滚动条 - 支持深色模式 */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
-
 ::-webkit-scrollbar-track {
-  @apply bg-slate-100 rounded-full;
+  background-color: hsl(var(--muted));
+  border-radius: 9999px;
 }
-
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 rounded-full;
+  background-color: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 9999px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-400;
+  background-color: hsl(var(--muted-foreground) / 0.5);
 }
-
 /* ECharts 容器 */
 .echarts-container {
   @apply w-full h-full min-h-[300px];

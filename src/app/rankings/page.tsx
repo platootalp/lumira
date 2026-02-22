@@ -71,9 +71,9 @@ export default function RankingsPage() {
   const currentData = rankings[activeTab];
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-background">
       {/* 顶部导航 */}
-      <header className="bg-white border-b sticky top-0 z-10">
+      <header className="bg-background border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
@@ -86,7 +86,7 @@ export default function RankingsPage() {
                 <ArrowLeft className="w-4 h-4 mr-1" />
                 返回
               </Button>
-              <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
                 <Trophy className="w-6 h-6 text-amber-500" />
                 基金排行榜
               </h1>
@@ -113,8 +113,8 @@ export default function RankingsPage() {
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors",
                   activeTab === tab.key
-                    ? "bg-blue-500 text-white"
-                    : "bg-white text-gray-600 hover:bg-gray-100"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-background text-muted-foreground hover:bg-accent"
                 )}
               >
                 <Icon className="w-4 h-4" />
@@ -129,7 +129,7 @@ export default function RankingsPage() {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>{tabs.find(t => t.key === activeTab)?.label}</span>
-              <span className="text-sm font-normal text-gray-400 flex items-center gap-1">
+              <span className="text-sm font-normal text-muted-foreground flex items-center gap-1">
                 <Clock className="w-4 h-4" />
                 实时更新
               </span>
@@ -138,8 +138,8 @@ export default function RankingsPage() {
           <CardContent>
             {isLoading ? (
               <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                <span className="ml-3 text-gray-500">加载中...</span>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <span className="ml-3 text-muted-foreground">加载中...</span>
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -156,18 +156,18 @@ export default function RankingsPage() {
                     <div
                       key={item.code}
                       onClick={() => router.push(`/fund/${item.code}`)}
-                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                      className="flex items-center justify-between p-4 bg-muted rounded-lg cursor-pointer hover:bg-accent transition-colors"
                     >
                       <div className="flex items-center gap-4">
                         <div className={cn(
                           "w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm",
-                          index < 3 ? "bg-amber-100 text-amber-700" : "bg-gray-200 text-gray-600"
+                          index < 3 ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400" : "bg-muted text-muted-foreground"
                         )}>
                           {index + 1}
                         </div>
                         <div>
-                          <div className="font-medium text-gray-900">{item.name}</div>
-                          <div className="text-sm text-gray-500">{item.code}</div>
+                          <div className="font-medium text-foreground">{item.name}</div>
+                          <div className="text-sm text-muted-foreground">{item.code}</div>
                         </div>
                       </div>
                       <div className="text-right">
@@ -177,7 +177,7 @@ export default function RankingsPage() {
                         )}>
                           {item.changePercent >= 0 ? "+" : ""}{item.changePercent.toFixed(2)}%
                         </div>
-                        <div className="text-sm text-gray-400">
+                        <div className="text-sm text-muted-foreground">
                           净值 {item.nav.toFixed(4)}
                         </div>
                       </div>
@@ -191,18 +191,18 @@ export default function RankingsPage() {
                       <div
                         key={item.code}
                         onClick={() => router.push(`/fund/${item.code}`)}
-                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                        className="flex items-center justify-between p-4 bg-muted rounded-lg cursor-pointer hover:bg-accent transition-colors"
                       >
                         <div className="flex items-center gap-4">
                           <div className={cn(
                             "w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm",
-                            index < 3 ? "bg-amber-100 text-amber-700" : "bg-gray-200 text-gray-600"
+                            index < 3 ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400" : "bg-muted text-muted-foreground"
                           )}>
                             {index + 1}
                           </div>
                           <div>
-                            <div className="font-medium text-gray-900">{item.name}</div>
-                            <div className="text-sm text-gray-500">{item.code}</div>
+                            <div className="font-medium text-foreground">{item.name}</div>
+                            <div className="text-sm text-muted-foreground">{item.code}</div>
                           </div>
                         </div>
                         <div className="text-right">
@@ -212,7 +212,7 @@ export default function RankingsPage() {
                           )}>
                             {isUp ? "+" : ""}{item.changePercent.toFixed(2)}%
                           </div>
-                          <div className="text-sm text-gray-400">
+                          <div className="text-sm text-muted-foreground">
                             净值 {item.nav.toFixed(4)}
                           </div>
                         </div>
@@ -227,7 +227,7 @@ export default function RankingsPage() {
 
         {/* 提示 */}
         <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-          <p className="text-sm text-amber-800">
+          <p className="text-sm text-amber-800 dark:text-amber-200">
             <span className="font-medium">⚠️ 免责声明：</span>
             排行榜数据仅供参考，不构成投资建议。过往业绩不代表未来表现，市场有风险，投资需谨慎。
           </p>

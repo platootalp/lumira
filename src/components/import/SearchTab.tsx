@@ -6,6 +6,7 @@ import { useCreateHolding } from "@/hooks/use-holdings";
 import type { Fund } from "@/types";
 import { debounce } from "@/lib/utils";
 import { Search, Loader2, Check } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 
 interface SearchTabProps {
@@ -20,11 +21,6 @@ const CHANNEL_OPTIONS = [
   "其他"
 ];
 
-/**
- * 搜索导入标签页组件
- *
- * 两步流程：搜索基金 → 填写持仓详情
- */
 export function SearchTab({ onSuccess }: SearchTabProps) {
   const { showToast } = useToast();
   const createHolding = useCreateHolding();
@@ -37,7 +33,6 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
   const [avgCost, setAvgCost] = useState("");
   const [channel, setChannel] = useState("");
 
-  // 防抖搜索
   const debouncedSearch = useRef(
     debounce(async (query: string) => {
       if (query.length < 2) {
@@ -70,7 +65,6 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
   const handleSelectFund = (fund: Fund) => {
     setSelectedFund(fund);
     setStep("form");
-    // 自动填充当前净值作为成本
     setAvgCost(fund.nav.toString());
   };
 
@@ -125,7 +119,6 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
         message: `成功添加持仓：${selectedFund.name}`,
       });
 
-      // 重置表单
       setSearchQuery("");
       setSearchResults([]);
       setSelectedFund(null);
@@ -134,7 +127,6 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
       setChannel("");
       setStep("search");
 
-      // 调用成功回调
       onSuccess?.();
     } catch (error) {
       console.error("保存持仓失败:", error);
@@ -156,40 +148,39 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
 
   const totalInvestment = calculateTotalInvestment();
 
+
   return (
     <div className="space-y-4">
       {step === "search" ? (
         <div className="space-y-4">
-          {/* 搜索框 */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
               placeholder="输入基金名称或代码搜索"
-              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="pl-10"
               autoFocus
             />
           </div>
 
-          {/* 搜索结果 */}
-          <div className="h-[300px] overflow-y-auto border rounded-lg">
+          <div className="h-[300px] overflow-y-auto border border-input rounded-lg bg-background">
             {isSearching ? (
-              <div className="flex items-center justify-center h-full text-gray-400">
+              <div className="flex items-center justify-center h-full text-muted-foreground">
                 <Loader2 className="w-6 h-6 animate-spin mr-2" />
                 搜索中...
               </div>
             ) : searchResults.length > 0 ? (
-              <div className="divide-y">
+              <div className="divide-y divide-border">
                 {searchResults.map((fund) => (
                   <button
                     key={fund.id}
                     onClick={() => handleSelectFund(fund)}
-                    className="w-full text-left p-3 hover:bg-gray-50 transition-colors"
+                    className="w-full text-left p-3 hover:bg-accent transition-colors"
                   >
-                    <div className="font-medium text-gray-900">{fund.name}</div>
-                    <div className="flex justify-between mt-1 text-sm text-gray-500">
+                    <div className="font-medium text-foreground">{fund.name}</div>
+                    <div className="flex justify-between mt-1 text-sm text-muted-foreground">
                       <span>{fund.id}</span>
                       <span>{fund.company}</span>
                     </div>
@@ -197,11 +188,11 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
                 ))}
               </div>
             ) : searchQuery.length >= 2 ? (
-              <div className="flex items-center justify-center h-full text-gray-400">
+              <div className="flex items-center justify-center h-full text-muted-foreground">
                 未找到相关基金
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full text-gray-400">
+              <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
                 <Search className="w-12 h-12 mb-2 opacity-50" />
                 <p>输入基金名称或6位基金代码</p>
               </div>
@@ -210,28 +201,26 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* 已选基金 */}
-          <div className="bg-gray-50 p-3 rounded-lg">
-            <div className="font-medium text-gray-900">{selectedFund?.name}</div>
-            <div className="flex justify-between mt-1 text-sm text-gray-500">
+          <div className="bg-muted p-3 rounded-lg">
+            <div className="font-medium text-foreground">{selectedFund?.name}</div>
+            <div className="flex justify-between mt-1 text-sm text-muted-foreground">
               <span>{selectedFund?.id}</span>
               <span>最新净值: {selectedFund?.nav}</span>
             </div>
             <button
               type="button"
               onClick={handleBack}
-              className="text-sm text-blue-600 mt-2 hover:underline"
+              className="text-sm text-primary mt-2 hover:underline"
             >
               重新选择
             </button>
           </div>
 
-          {/* 份额 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              持有份额 <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium text-foreground mb-1">
+              持有份额 <span className="text-destructive">*</span>
             </label>
-            <input
+            <Input
               type="number"
               value={shares}
               onChange={(e) => setShares(e.target.value)}
@@ -239,16 +228,14 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
               step="0.01"
               min="0.01"
               required
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          {/* 成本价 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              成本单价 (元) <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium text-foreground mb-1">
+              成本单价 (元) <span className="text-destructive">*</span>
             </label>
-            <input
+            <Input
               type="number"
               value={avgCost}
               onChange={(e) => setAvgCost(e.target.value)}
@@ -256,22 +243,20 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
               step="0.0001"
               min="0.0001"
               required
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               已自动填充最新净值，请根据实际成本修改
             </p>
           </div>
 
-          {/* 购买渠道 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               购买渠道
             </label>
             <select
               value={channel}
               onChange={(e) => setChannel(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
             >
               <option value="">请选择</option>
               {CHANNEL_OPTIONS.map((option) => (
@@ -282,31 +267,29 @@ export function SearchTab({ onSuccess }: SearchTabProps) {
             </select>
           </div>
 
-          {/* 投入金额预览 */}
           {totalInvestment !== null && (
-            <div className="bg-blue-50 p-3 rounded-lg">
+            <div className="bg-primary/10 p-3 rounded-lg">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">投入金额:</span>
-                <span className="font-medium text-blue-700">
+                <span className="text-sm text-muted-foreground">投入金额:</span>
+                <span className="font-medium text-primary">
                   ¥{totalInvestment.toFixed(2)}
                 </span>
               </div>
             </div>
           )}
 
-          {/* 提交按钮 */}
           <div className="flex gap-3 pt-2">
             <button
               type="button"
               onClick={handleBack}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-2 border border-input rounded-lg hover:bg-accent transition-colors text-foreground"
             >
               返回
             </button>
             <button
               type="submit"
               disabled={createHolding.isPending || !shares || !avgCost}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+              className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
             >
               {createHolding.isPending ? (
                 <>

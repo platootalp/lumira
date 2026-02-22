@@ -69,32 +69,32 @@ const toastIcons = {
 
 const toastStyles = {
   success: {
-    bg: "bg-emerald-50/90",
-    border: "border-emerald-200",
+    bg: "bg-emerald-500/10",
+    border: "border-emerald-500/20",
     icon: "text-emerald-500",
-    title: "text-emerald-900",
-    message: "text-emerald-700",
+    title: "text-emerald-600 dark:text-emerald-400",
+    message: "text-emerald-600/80 dark:text-emerald-400/80",
   },
   error: {
-    bg: "bg-red-50/90",
-    border: "border-red-200",
-    icon: "text-red-500",
-    title: "text-red-900",
-    message: "text-red-700",
+    bg: "bg-destructive/10",
+    border: "border-destructive/20",
+    icon: "text-destructive",
+    title: "text-destructive",
+    message: "text-destructive/80",
   },
   warning: {
-    bg: "bg-amber-50/90",
-    border: "border-amber-200",
+    bg: "bg-amber-500/10",
+    border: "border-amber-500/20",
     icon: "text-amber-500",
-    title: "text-amber-900",
-    message: "text-amber-700",
+    title: "text-amber-600 dark:text-amber-400",
+    message: "text-amber-600/80 dark:text-amber-400/80",
   },
   info: {
-    bg: "bg-blue-50/90",
-    border: "border-blue-200",
-    icon: "text-blue-500",
-    title: "text-blue-900",
-    message: "text-blue-700",
+    bg: "bg-primary/10",
+    border: "border-primary/20",
+    icon: "text-primary",
+    title: "text-primary",
+    message: "text-primary/80",
   },
 };
 
@@ -152,7 +152,7 @@ function ToastItem({
           onClick={() => onDismiss(toast.id)}
           className="flex-shrink-0 p-1 rounded-lg hover:bg-black/5 transition-colors"
         >
-          <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
+          <X className="w-4 h-4 text-muted-foreground hover:text-foreground" />
         </button>
       </div>
     </div>

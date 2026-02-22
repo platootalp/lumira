@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { formatNumber, cn } from "@/lib/utils";
 import { 
   Calculator, 
@@ -44,15 +45,15 @@ export default function SIPPage() {
   }, [monthlyAmount, years, annualRate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4 lg:p-8">
+    <div className="min-h-screen bg-background p-4 lg:p-8">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
             <Calculator className="w-5 h-5 text-purple-600" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">定投计划</h1>
-            <p className="text-sm text-slate-500">计算定投收益，制定投资计划</p>
+            <h1 className="text-2xl font-bold text-foreground">定投计划</h1>
+            <p className="text-sm text-muted-foreground">计算定投收益，制定投资计划</p>
           </div>
         </div>
 
@@ -66,32 +67,32 @@ export default function SIPPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   每月定投金额 (元)
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">¥</span>
-                  <input
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">¥</span>
+                  <Input
                     type="number"
                     value={monthlyAmount}
                     onChange={(e) => setMonthlyAmount(e.target.value)}
-                    className="w-full pl-8 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                    className="pl-8 text-lg"
                     placeholder="1000"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   定投年限
                 </label>
                 <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input
+                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
                     type="number"
                     value={years}
                     onChange={(e) => setYears(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                    className="pl-10 text-lg"
                     placeholder="3"
                   />
                 </div>
@@ -103,8 +104,8 @@ export default function SIPPage() {
                       className={cn(
                         "px-3 py-1 text-sm rounded-lg transition-colors",
                         years === y
-                          ? "bg-blue-100 text-blue-700"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                          ? "bg-primary/10 text-primary"
+                          : "bg-muted text-muted-foreground hover:bg-accent"
                       )}
                     >
                       {y}年
@@ -114,16 +115,16 @@ export default function SIPPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   预期年化收益率 (%)
                 </label>
                 <div className="relative">
-                  <Percent className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input
+                  <Percent className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
                     type="number"
                     value={annualRate}
                     onChange={(e) => setAnnualRate(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                    className="pl-10 text-lg"
                     placeholder="8"
                   />
                 </div>
@@ -135,8 +136,8 @@ export default function SIPPage() {
                       className={cn(
                         "px-3 py-1 text-sm rounded-lg transition-colors",
                         annualRate === r
-                          ? "bg-blue-100 text-blue-700"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                          ? "bg-primary/10 text-primary"
+                          : "bg-muted text-muted-foreground hover:bg-accent"
                       )}
                     >
                       {r}%
@@ -159,30 +160,30 @@ export default function SIPPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                      <div className="text-center p-4 bg-slate-50 rounded-xl">
-                        <p className="text-sm text-slate-500 mb-1">投入本金</p>
-                        <p className="text-2xl font-bold text-slate-900">
+                      <div className="text-center p-4 bg-muted rounded-xl">
+                        <p className="text-sm text-muted-foreground mb-1">投入本金</p>
+                        <p className="text-2xl font-bold text-foreground">
                           ¥{formatNumber(result.totalInvested)}
                         </p>
-                        <p className="text-xs text-slate-400 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           {monthlyAmount}元 × {result.period}个月
                         </p>
                       </div>
-                      <div className="text-center p-4 bg-blue-50 rounded-xl">
-                        <p className="text-sm text-slate-500 mb-1">预期总资产</p>
-                        <p className="text-2xl font-bold text-blue-600">
+                      <div className="text-center p-4 bg-primary/10 rounded-xl">
+                        <p className="text-sm text-muted-foreground mb-1">预期总资产</p>
+                        <p className="text-2xl font-bold text-primary">
                           ¥{formatNumber(result.futureValue)}
                         </p>
-                        <p className="text-xs text-slate-400 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           定投{years}年后
                         </p>
                       </div>
-                      <div className="text-center p-4 bg-green-50 rounded-xl">
-                        <p className="text-sm text-slate-500 mb-1">收益金额</p>
-                        <p className="text-2xl font-bold text-green-600">
+                      <div className="text-center p-4 bg-[hsl(var(--fund-down)/0.1)] rounded-xl">
+                        <p className="text-sm text-muted-foreground mb-1">收益金额</p>
+                        <p className="text-2xl font-bold text-[hsl(var(--fund-down))]">
                           +¥{formatNumber(result.totalReturn)}
                         </p>
-                        <p className="text-xs text-green-600 mt-1">
+                        <p className="text-xs text-[hsl(var(--fund-down))] mt-1">
                           +{formatNumber(result.returnRate)}%
                         </p>
                       </div>
@@ -198,21 +199,21 @@ export default function SIPPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <ul className="space-y-3 text-sm text-slate-600">
+                    <ul className="space-y-3 text-sm text-muted-foreground">
                       <li className="flex items-start gap-2">
-                        <span className="text-blue-500 mt-0.5">•</span>
+                        <span className="text-primary mt-0.5">•</span>
                         <span>定投（定期定额投资）可以平摊成本，降低市场波动风险</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-blue-500 mt-0.5">•</span>
+                        <span className="text-primary mt-0.5">•</span>
                         <span>计算结果基于预期年化收益率，实际收益可能有所不同</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-blue-500 mt-0.5">•</span>
+                        <span className="text-primary mt-0.5">•</span>
                         <span>长期定投（3-5年以上）通常能获得更好的平均收益</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-blue-500 mt-0.5">•</span>
+                        <span className="text-primary mt-0.5">•</span>
                         <span>建议根据自身财务状况选择合适的定投金额</span>
                       </li>
                     </ul>
@@ -221,7 +222,7 @@ export default function SIPPage() {
               </>
             ) : (
               <Card className="h-full flex items-center justify-center min-h-[300px]">
-                <CardContent className="text-center text-slate-400">
+                <CardContent className="text-center text-muted-foreground">
                   <Calculator className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>请输入定投参数查看计算结果</p>
                 </CardContent>

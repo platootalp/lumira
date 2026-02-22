@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useCreateHolding } from "@/hooks/use-holdings";
 import type { FundType } from "@/types";
 import { useToast } from "@/components/ui/toast";
@@ -96,7 +97,6 @@ export function ManualTab({ onSuccess }: ManualTabProps) {
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
@@ -131,10 +131,7 @@ export function ManualTab({ onSuccess }: ManualTabProps) {
         message: "基金添加成功！",
       });
 
-      // Reset form
       setFormData(initialFormData);
-
-      // Call success callback
       onSuccess?.();
     } catch (error) {
       console.error("保存基金失败:", error);
@@ -146,55 +143,52 @@ export function ManualTab({ onSuccess }: ManualTabProps) {
     }
   };
 
-  const inputClassName =
-    "w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500";
+  const getInputClassName = (hasError: boolean) =>
+    hasError ? "border-destructive" : "";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {/* 基金代码 */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
-          基金代码 <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium text-foreground mb-1">
+          基金代码 <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           type="text"
           value={formData.fundCode}
           onChange={(e) => handleInputChange("fundCode", e.target.value)}
           placeholder="请输入6位基金代码"
           maxLength={6}
-          className={`${inputClassName} ${errors.fundCode ? "border-red-500" : "border-slate-300"}`}
+          className={getInputClassName(!!errors.fundCode)}
         />
         {errors.fundCode && (
-          <p className="mt-1 text-sm text-red-500">{errors.fundCode}</p>
+          <p className="mt-1 text-sm text-destructive">{errors.fundCode}</p>
         )}
       </div>
 
-      {/* 基金名称 */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
-          基金名称 <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium text-foreground mb-1">
+          基金名称 <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           type="text"
           value={formData.fundName}
           onChange={(e) => handleInputChange("fundName", e.target.value)}
           placeholder="请输入基金名称"
-          className={`${inputClassName} ${errors.fundName ? "border-red-500" : "border-slate-300"}`}
+          className={getInputClassName(!!errors.fundName)}
         />
         {errors.fundName && (
-          <p className="mt-1 text-sm text-red-500">{errors.fundName}</p>
+          <p className="mt-1 text-sm text-destructive">{errors.fundName}</p>
         )}
       </div>
 
-      {/* 基金类型 */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
-          基金类型 <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium text-foreground mb-1">
+          基金类型 <span className="text-destructive">*</span>
         </label>
         <select
           value={formData.fundType}
           onChange={(e) => handleInputChange("fundType", e.target.value as FundType)}
-          className={`${inputClassName} border-slate-300 bg-white`}
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           {FUND_TYPES.map((type) => (
             <option key={type.value} value={type.value}>
@@ -204,63 +198,59 @@ export function ManualTab({ onSuccess }: ManualTabProps) {
         </select>
       </div>
 
-      {/* 持有份额 */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
-          持有份额 <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium text-foreground mb-1">
+          持有份额 <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           type="number"
           step="0.01"
           min="0"
           value={formData.shares}
           onChange={(e) => handleInputChange("shares", e.target.value)}
           placeholder="请输入持有份额"
-          className={`${inputClassName} ${errors.shares ? "border-red-500" : "border-slate-300"}`}
+          className={getInputClassName(!!errors.shares)}
         />
         {errors.shares && (
-          <p className="mt-1 text-sm text-red-500">{errors.shares}</p>
+          <p className="mt-1 text-sm text-destructive">{errors.shares}</p>
         )}
       </div>
 
-      {/* 成本单价 */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
-          成本单价 <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium text-foreground mb-1">
+          成本单价 <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           type="number"
           step="0.0001"
           min="0"
           value={formData.avgCost}
           onChange={(e) => handleInputChange("avgCost", e.target.value)}
           placeholder="请输入成本单价"
-          className={`${inputClassName} ${errors.avgCost ? "border-red-500" : "border-slate-300"}`}
+          className={getInputClassName(!!errors.avgCost)}
         />
         {errors.avgCost && (
-          <p className="mt-1 text-sm text-red-500">{errors.avgCost}</p>
+          <p className="mt-1 text-sm text-destructive">{errors.avgCost}</p>
         )}
       </div>
 
-      {/* 总成本（自动计算） */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
+        <label className="block text-sm font-medium text-foreground mb-1">
           总成本
         </label>
-        <div className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 text-slate-600">
+        <div className="w-full px-3 py-2 border border-input rounded-lg bg-muted text-muted-foreground">
           {totalCost > 0 ? `¥${totalCost.toFixed(2)}` : "--"}
         </div>
       </div>
 
-      {/* 购买渠道 */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
+        <label className="block text-sm font-medium text-foreground mb-1">
           购买渠道
         </label>
         <select
           value={formData.channel}
           onChange={(e) => handleInputChange("channel", e.target.value)}
-          className={`${inputClassName} border-slate-300 bg-white`}
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           {CHANNELS.map((channel) => (
             <option key={channel.value} value={channel.value}>
@@ -270,21 +260,18 @@ export function ManualTab({ onSuccess }: ManualTabProps) {
         </select>
       </div>
 
-      {/* 分组 */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
+        <label className="block text-sm font-medium text-foreground mb-1">
           分组
         </label>
-        <input
+        <Input
           type="text"
           value={formData.group}
           onChange={(e) => handleInputChange("group", e.target.value)}
           placeholder="请输入分组（可选）"
-          className={`${inputClassName} border-slate-300`}
         />
       </div>
 
-      {/* 提交按钮 */}
       <div className="pt-4">
         <Button
           type="submit"

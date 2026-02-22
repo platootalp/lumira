@@ -8,6 +8,7 @@ import type { ImportPreviewItem } from "@/types/import";
 import { FileSpreadsheet, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
+import { Input } from "@/components/ui/input";
 
 interface ExcelTabProps {
   onSuccess?: () => void;
@@ -292,20 +293,20 @@ export function ExcelTab({ onSuccess }: ExcelTabProps) {
             className={cn(
               "border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors",
               isDragging
-                ? "border-blue-500 bg-blue-50"
-                : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+                ? "border-primary bg-primary/10"
+                : "border-input hover:border-ring hover:bg-muted"
             )}
           >
-            <FileSpreadsheet className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-            <p className="text-sm text-gray-600 mb-1">
+            <FileSpreadsheet className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground mb-1">
               拖拽Excel文件到此处，或点击上传
             </p>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-muted-foreground/70">
               支持支付宝、微信理财通、蚂蚁财富导出的Excel格式
             </p>
           </div>
 
-          <input
+          <Input
             ref={fileInputRef}
             type="file"
             accept=".xlsx,.xls"
@@ -314,14 +315,14 @@ export function ExcelTab({ onSuccess }: ExcelTabProps) {
           />
 
           {parseError && (
-            <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-lg">
+            <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
               <AlertCircle className="w-4 h-4" />
               {parseError}
             </div>
           )}
 
-          <div className="bg-slate-50 p-4 rounded-lg text-sm text-slate-600">
-            <p className="font-medium mb-2">支持的格式说明：</p>
+          <div className="bg-muted p-4 rounded-lg text-sm text-muted-foreground">
+            <p className="font-medium mb-2 text-foreground">支持的格式说明：</p>
             <ul className="space-y-1 text-xs">
               <li>• 支付宝：基金名称、基金代码、持有份额、持仓成本价</li>
               <li>• 微信理财通：产品名称、产品代码、持有数量、成本单价</li>

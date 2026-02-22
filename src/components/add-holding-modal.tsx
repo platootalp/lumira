@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { searchFunds } from "@/services/fund";
 import type { Fund } from "@/types";
@@ -114,9 +115,9 @@ export function AddHoldingModal({ isOpen, onClose, onAdd }: AddHoldingModalProps
           </CardTitle>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-muted rounded-full transition-colors"
           >
-            <X className="w-5 h-5 text-gray-500" />
+            <X className="w-5 h-5 text-muted-foreground" />
           </button>
         </CardHeader>
         
@@ -125,13 +126,13 @@ export function AddHoldingModal({ isOpen, onClose, onAdd }: AddHoldingModalProps
             <div className="space-y-4">
               {/* 搜索框 */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
                   type="text"
                   value={searchQuery}
                   onChange={handleSearchChange}
                   placeholder="输入基金名称或代码"
-                  className="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="pl-10"
                   autoFocus
                 />
               </div>
@@ -139,7 +140,7 @@ export function AddHoldingModal({ isOpen, onClose, onAdd }: AddHoldingModalProps
               {/* 搜索结果 */}
               <div className="h-[300px] overflow-y-auto">
                 {isSearching ? (
-                  <div className="flex items-center justify-center h-full text-gray-400">
+                  <div className="flex items-center justify-center h-full text-muted-foreground">
                     <Loader2 className="w-6 h-6 animate-spin mr-2" />
                     搜索中...
                   </div>
@@ -149,10 +150,10 @@ export function AddHoldingModal({ isOpen, onClose, onAdd }: AddHoldingModalProps
                       <button
                         key={fund.id}
                         onClick={() => handleSelectFund(fund)}
-                        className="w-full text-left p-3 rounded-lg border hover:border-blue-500 hover:bg-blue-50 transition-colors"
+                        className="w-full text-left p-3 rounded-lg border hover:border-primary hover:bg-primary/10 transition-colors"
                       >
-                        <div className="font-medium text-gray-900">{fund.name}</div>
-                        <div className="flex justify-between mt-1 text-sm text-gray-500">
+                        <div className="font-medium text-foreground">{fund.name}</div>
+                        <div className="flex justify-between mt-1 text-sm text-muted-foreground">
                           <span>{fund.id}</span>
                           <span>{fund.company}</span>
                         </div>
@@ -160,11 +161,11 @@ export function AddHoldingModal({ isOpen, onClose, onAdd }: AddHoldingModalProps
                     ))}
                   </div>
                 ) : searchQuery.length >= 2 ? (
-                  <div className="flex items-center justify-center h-full text-gray-400">
+                  <div className="flex items-center justify-center h-full text-muted-foreground">
                     未找到相关基金
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                  <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
                     <Search className="w-12 h-12 mb-2 opacity-50" />
                     <p>输入基金名称或6位基金代码</p>
                   </div>
@@ -174,16 +175,16 @@ export function AddHoldingModal({ isOpen, onClose, onAdd }: AddHoldingModalProps
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* 已选基金 */}
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <div className="font-medium text-gray-900">{selectedFund?.name}</div>
-                <div className="flex justify-between mt-1 text-sm text-gray-500">
+              <div className="bg-muted p-3 rounded-lg">
+                <div className="font-medium text-foreground">{selectedFund?.name}</div>
+                <div className="flex justify-between mt-1 text-sm text-muted-foreground">
                   <span>{selectedFund?.id}</span>
                   <span>最新净值: {selectedFund?.nav}</span>
                 </div>
                 <button
                   type="button"
                   onClick={handleBack}
-                  className="text-sm text-blue-600 mt-2 hover:underline"
+                  className="text-sm text-primary mt-2 hover:underline"
                 >
                   重新选择
                 </button>
@@ -191,10 +192,10 @@ export function AddHoldingModal({ isOpen, onClose, onAdd }: AddHoldingModalProps
               
               {/* 份额 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  持有份额 <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
+                  持有份额 <span className="text-destructive">*</span>
                 </label>
-                <input
+                <Input
                   type="number"
                   value={shares}
                   onChange={(e) => setShares(e.target.value)}
@@ -202,16 +203,15 @@ export function AddHoldingModal({ isOpen, onClose, onAdd }: AddHoldingModalProps
                   step="0.01"
                   min="0.01"
                   required
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               
               {/* 成本价 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  成本单价 (元) <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
+                  成本单价 (元) <span className="text-destructive">*</span>
                 </label>
-                <input
+                <Input
                   type="number"
                   value={avgCost}
                   onChange={(e) => setAvgCost(e.target.value)}
@@ -219,22 +219,21 @@ export function AddHoldingModal({ isOpen, onClose, onAdd }: AddHoldingModalProps
                   step="0.0001"
                   min="0.0001"
                   required
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   已自动填充最新净值，请根据实际成本修改
                 </p>
               </div>
               
               {/* 购买渠道 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   购买渠道
                 </label>
                 <select
                   value={channel}
                   onChange={(e) => setChannel(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring bg-background"
                 >
                   <option value="">请选择</option>
                   <option value="蚂蚁财富">蚂蚁财富</option>
@@ -247,9 +246,9 @@ export function AddHoldingModal({ isOpen, onClose, onAdd }: AddHoldingModalProps
               
               {/* 预估信息 */}
               {shares && avgCost && selectedFund && (
-                <div className="bg-blue-50 p-3 rounded-lg text-sm">
+                <div className="bg-primary/10 p-3 rounded-lg text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">投入金额:</span>
+                    <span className="text-muted-foreground">投入金额:</span>
                     <span className="font-medium">
                       ¥{(parseFloat(shares) * parseFloat(avgCost)).toFixed(2)}
                     </span>

@@ -32,7 +32,7 @@ export function ConfirmDialog({
         className="
           relative z-10
           w-full max-w-md mx-4
-          rounded-2xl border border-white/10
+          rounded-2xl border border-border
           bg-card
           p-6
           shadow-2xl
@@ -40,11 +40,11 @@ export function ConfirmDialog({
         "
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-xl font-semibold text-white mb-2">
+        <h2 className="text-xl font-semibold text-foreground mb-2">
           {title}
         </h2>
 
-        <p className="text-text-muted mb-6 leading-relaxed">
+        <p className="text-muted-foreground mb-6 leading-relaxed">
           {description}
         </p>
 
@@ -54,8 +54,8 @@ export function ConfirmDialog({
             className="
               px-4 py-2
               rounded-lg
-              bg-white/5 hover:bg-white/10
-              text-text-muted hover:text-white
+              bg-muted hover:bg-muted/80
+              text-muted-foreground hover:text-foreground
               font-medium
               transition-all duration-200
             "

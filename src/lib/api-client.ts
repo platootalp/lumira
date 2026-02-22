@@ -28,6 +28,9 @@ export class ApiClient {
     if (tokens) {
       this.accessToken = tokens.accessToken;
       this.refreshToken = tokens.refreshToken;
+      if (typeof window !== 'undefined') {
+        document.cookie = `access_token=${tokens.accessToken}; path=/; max-age=604800; SameSite=Lax`;
+      }
       return true;
     }
     return false;
@@ -55,6 +58,7 @@ export class ApiClient {
     if (typeof window !== 'undefined') {
       localStorage.setItem('accessToken', tokens.accessToken);
       localStorage.setItem('refreshToken', tokens.refreshToken);
+      document.cookie = `access_token=${tokens.accessToken}; path=/; max-age=604800; SameSite=Lax`;
     }
   }
 
@@ -73,6 +77,7 @@ export class ApiClient {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
+      document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     }
   }
 

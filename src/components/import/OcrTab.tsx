@@ -7,6 +7,7 @@ import { ImportPreview } from "./ImportPreview";
 import type { ImportPreviewItem, OcrMode, BaiduOcrConfig } from "@/types/import";
 import { Camera, AlertCircle, Loader2, Cloud, Laptop } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 
 interface OcrTabProps {
@@ -253,12 +254,12 @@ export function OcrTab({ onSuccess }: OcrTabProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-center gap-2 p-1 bg-slate-100 rounded-lg">
+      <div className="flex items-center justify-center gap-2 p-1 bg-muted rounded-lg">
         <button
           onClick={() => setMode("client")}
           className={cn(
             "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all",
-            mode === "client" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
+            mode === "client" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
           )}
         >
           <Laptop className="w-4 h-4" />
@@ -268,7 +269,7 @@ export function OcrTab({ onSuccess }: OcrTabProps) {
           onClick={() => setMode("cloud")}
           className={cn(
             "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all",
-            mode === "cloud" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
+            mode === "cloud" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
           )}
         >
           <Cloud className="w-4 h-4" />
@@ -277,25 +278,23 @@ export function OcrTab({ onSuccess }: OcrTabProps) {
       </div>
 
       {mode === "cloud" && (
-        <div className="space-y-3 p-4 bg-slate-50 rounded-lg border">
-          <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
+        <div className="space-y-3 p-4 bg-muted rounded-lg border border-input">
+          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
             <AlertCircle className="w-4 h-4" />
             百度OCR API配置
           </div>
           <div className="grid gap-3">
-            <input
+            <Input
               type="text"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               placeholder="API Key"
-              className="w-full h-9 text-sm px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <input
+            <Input
               type="password"
               value={secretKey}
               onChange={(e) => setSecretKey(e.target.value)}
               placeholder="Secret Key"
-              className="w-full h-9 text-sm px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -306,7 +305,7 @@ export function OcrTab({ onSuccess }: OcrTabProps) {
           onClick={() => fileInputRef.current?.click()}
           className={cn(
             "relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all",
-            isProcessing ? "border-blue-300 bg-blue-50" : "border-slate-300 hover:border-slate-400 hover:bg-slate-50"
+            isProcessing ? "border-primary/50 bg-primary/5" : "border-input hover:border-ring hover:bg-muted"
           )}
         >
           <input
@@ -320,29 +319,29 @@ export function OcrTab({ onSuccess }: OcrTabProps) {
           
           {isProcessing ? (
             <div className="space-y-4">
-              <Loader2 className="w-10 h-10 mx-auto text-blue-500 animate-spin" />
+              <Loader2 className="w-10 h-10 mx-auto text-primary animate-spin" />
               <div>
-                <p className="text-sm font-medium text-slate-700">正在识别...</p>
-                <div className="mt-2 w-48 h-2 bg-slate-200 rounded-full mx-auto overflow-hidden">
-                  <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${progress}%` }} />
+                <p className="text-sm font-medium text-foreground">正在识别...</p>
+                <div className="mt-2 w-48 h-2 bg-muted rounded-full mx-auto overflow-hidden">
+                  <div className="h-full bg-primary transition-all duration-300" style={{ width: `${progress}%` }} />
                 </div>
-                <p className="mt-1 text-xs text-slate-500">{progress}%</p>
+                <p className="mt-1 text-xs text-muted-foreground">{progress}%</p>
               </div>
             </div>
           ) : (
             <div className="space-y-3">
-              <div className="w-14 h-14 mx-auto bg-slate-100 rounded-full flex items-center justify-center">
-                <Camera className="w-7 h-7 text-slate-400" />
+              <div className="w-14 h-14 mx-auto bg-muted rounded-full flex items-center justify-center">
+                <Camera className="w-7 h-7 text-muted-foreground" />
               </div>
-              <p className="text-sm font-medium text-slate-700">点击上传截图</p>
-              <p className="text-xs text-slate-500">支持基金持仓截图、交易记录截图等</p>
+              <p className="text-sm font-medium text-foreground">点击上传截图</p>
+              <p className="text-xs text-muted-foreground">支持基金持仓截图、交易记录截图等</p>
             </div>
           )}
         </div>
       )}
 
       {error && (
-        <div className="flex items-center gap-2 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+        <div className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive rounded-lg text-sm">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           {error}
         </div>

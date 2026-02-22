@@ -6,18 +6,53 @@
    - Local:        http://localhost:3000
    - Environments: .env.local
 
- ✓ Ready in 2.5s
+ ✓ Ready in 2.7s
+ ✓ Compiled /src/middleware in 234ms
+ ✓ Compiled (64 modules)
  ○ Compiling / ...
- ✓ Compiled / in 4.2s (1937 modules)
- ✓ Compiled in 544ms (979 modules)
+ ✓ Compiled / in 3.4s (869 modules)
+ ✓ Compiled in 703ms (444 modules)
+ ○ Compiling /login ...
+ ✓ Compiled /login in 2s (875 modules)
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 1402ms (2016 modules)
  ○ Compiling /holdings ...
- ✓ Compiled /holdings in 660ms (1947 modules)
- ✓ Compiled /analysis in 263ms (1955 modules)
- ✓ Compiled /sip in 199ms (1969 modules)
+ ✓ Compiled /holdings in 1327ms (2038 modules)
+ ✓ Compiled /analysis in 218ms (2046 modules)
+ ○ Compiling /sip ...
+ ✓ Compiled /sip in 934ms (2060 modules)
  ○ Compiling /rankings ...
- ✓ Compiled /rankings in 527ms (1983 modules)
- ○ Compiling /compare ...
- ✓ Compiled /compare in 958ms (1991 modules)
- ✓ Compiled /import in 436ms (2102 modules)
- ○ Compiling /not-found ...
- ✓ Compiled /not-found in 1103ms (2107 modules)
+ ✓ Compiled /rankings in 1003ms (2072 modules)
+ ✓ Compiled /compare in 225ms (2080 modules)
+ ○ Compiling /import ...
+ ✓ Compiled /import in 2.2s (2187 modules)
+ ✓ Compiled in 1387ms (1095 modules)
+ ✓ Compiled in 322ms (1095 modules)
+ ✓ Compiled in 287ms (1095 modules)
+ ✓ Compiled in 1141ms (1095 modules)
+ ✓ Compiled in 2.6s (2117 modules)
+ ✓ Compiled in 1282ms (1096 modules)
+ ✓ Compiled in 687ms (1096 modules)
+ ○ Compiling /import ...
+ ✓ Compiled /import in 578ms (1086 modules)
+ ✓ Compiled in 552ms (1096 modules)
+ ✓ Compiled in 328ms (1096 modules)
+ ✓ Compiled in 4.9s (2171 modules)
+ ✓ Compiled in 1545ms (1096 modules)
+ ✓ Compiled in 6.8s (1096 modules)
+ ✓ Compiled in 6.5s (2171 modules)
+ ✓ Compiled in 19.7s (2171 modules)
+ ✓ Compiled in 5.3s (1096 modules)
+ ○ Compiling /analysis ...
+ ✓ Compiled /analysis in 2.4s (1080 modules)
+ ○ Compiling /holdings ...
+ ✓ Compiled /holdings in 5.1s (1091 modules)
+ ✓ Compiled in 2.8s (1096 modules)
+ ✓ Compiled in 1311ms (1096 modules)
+ ✓ Compiled in 8.5s (2187 modules)
+ ✓ Compiled in 2.2s (1096 modules)
+ ✓ Compiled in 4.6s (2187 modules)
+ ✓ Compiled in 0ms (1091 modules)
+ ✓ Compiled in 0ms (1091 modules)
+ ✓ Compiled in 1ms (1091 modules)
+ ✓ Compiled in 1ms (1091 modules)

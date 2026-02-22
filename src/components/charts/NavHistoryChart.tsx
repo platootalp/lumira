@@ -1,9 +1,15 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import ReactECharts from "echarts-for-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+
+// Helper to get CSS variable value
+function getCssVariable(name: string): string {
+  if (typeof window === "undefined") return "";
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
 
 interface NavHistoryItem {
   date: string;
@@ -98,19 +104,36 @@ export function NavHistoryChart({
     return { dates, navs, changes };
   }, [filteredData, estimateNav, estimateTime]);
 
+  // Get theme-aware colors for ECharts
+  const [themeColors, setThemeColors] = useState({
+    foreground: "#1e293b",
+    mutedForeground: "#64748b",
+    border: "#e2e8f0",
+    background: "#ffffff",
+  });
+
+  useEffect(() => {
+    setThemeColors({
+      foreground: getCssVariable("--foreground") || "#1e293b",
+      mutedForeground: getCssVariable("--muted-foreground") || "#64748b",
+      border: getCssVariable("--border") || "#e2e8f0",
+      background: getCssVariable("--background") || "#ffffff",
+    });
+  }, []);
+
   const option = useMemo(() => {
     const isPositive =
       chartData.navs.length > 1
         ? chartData.navs[chartData.navs.length - 1] >= chartData.navs[0]
         : true;
 
-    const lineColor = isPositive ? "#ef4444" : "#22c55e";
+    const lineColor = isPositive ? "#F56C6C" : "#67C23A";
     const areaColorStart = isPositive
-      ? "rgba(239, 68, 68, 0.3)"
-      : "rgba(34, 197, 94, 0.3)";
+      ? "rgba(245, 108, 108, 0.3)"
+      : "rgba(103, 194, 58, 0.3)";
     const areaColorEnd = isPositive
-      ? "rgba(239, 68, 68, 0.05)"
-      : "rgba(34, 197, 94, 0.05)";
+      ? "rgba(245, 108, 108, 0.05)"
+      : "rgba(103, 194, 58, 0.05)";
 
     return {
       backgroundColor: "transparent",
@@ -123,12 +146,12 @@ export function NavHistoryChart({
       },
       tooltip: {
         trigger: "axis",
-        backgroundColor: "rgba(255, 255, 255, 0.95)",
-        borderColor: "#e2e8f0",
+        backgroundColor: themeColors.background,
+        borderColor: themeColors.border,
         borderWidth: 1,
         padding: [12, 16],
         textStyle: {
-          color: "#1e293b",
+          color: themeColors.foreground,
           fontSize: 13,
         },
         formatter: (params: any) => {
@@ -138,17 +161,17 @@ export function NavHistoryChart({
           const change = chartData.changes[dataIndex];
           const isEstimate = estimateTime?.startsWith(date) && dataIndex === chartData.dates.length - 1;
 
-          let html = `<div style="font-weight: 600; margin-bottom: 8px; color: #334155;">${date}</div>`;
+          let html = `<div style="font-weight: 600; margin-bottom: 8px; color: ${themeColors.foreground};">${date}</div>`;
           html += `<div style="display: flex; align-items: center; gap: 8px;">`;
-          html += `<span style="color: #64748b;">净值:</span>`;
-          html += `<span style="font-weight: 600; font-family: monospace; font-size: 14px;">${nav.toFixed(4)}</span>`;
+          html += `<span style="color: ${themeColors.mutedForeground};">净值:</span>`;
+          html += `<span style="font-weight: 600; font-family: monospace; font-size: 14px; color: ${themeColors.foreground};">${nav.toFixed(4)}</span>`;
           if (isEstimate) {
             html += `<span style="background: #3b82f6; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px;">估值</span>`;
           }
           html += `</div>`;
 
           if (change !== undefined && change !== 0 && !isEstimate) {
-            const changeColor = change >= 0 ? "#ef4444" : "#22c55e";
+            const changeColor = change >= 0 ? "#F56C6C" : "#67C23A";
             const changeSign = change >= 0 ? "+" : "";
             html += `<div style="margin-top: 6px; color: ${changeColor}; font-weight: 500;">`;
             html += `涨跌: ${changeSign}${change.toFixed(2)}%`;
@@ -164,11 +187,11 @@ export function NavHistoryChart({
         boundaryGap: false,
         axisLine: {
           lineStyle: {
-            color: "#e2e8f0",
+            color: themeColors.border,
           },
         },
         axisLabel: {
-          color: "#64748b",
+          color: themeColors.mutedForeground,
           fontSize: 11,
           formatter: (value: string) => {
             const date = new Date(value);
@@ -189,13 +212,13 @@ export function NavHistoryChart({
           show: false,
         },
         axisLabel: {
-          color: "#64748b",
+          color: themeColors.mutedForeground,
           fontSize: 11,
           formatter: (value: number) => value.toFixed(3),
         },
         splitLine: {
           lineStyle: {
-            color: "#f1f5f9",
+            color: themeColors.border,
             type: "dashed",
           },
         },
@@ -231,7 +254,7 @@ export function NavHistoryChart({
                 params.dataIndex === chartData.dates.length - 1;
               return isEstimate ? 3 : 2;
             },
-            borderColor: "#fff",
+            borderColor: themeColors.background,
           },
           areaStyle: {
             color: {
@@ -276,11 +299,11 @@ export function NavHistoryChart({
       animationDuration: 800,
       animationEasing: "cubicOut",
     };
-  }, [chartData, estimateTime]);
+  }, [chartData, estimateTime, themeColors]);
 
   if (data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-[300px] text-gray-500">
+      <div className="flex flex-col items-center justify-center h-[300px] text-muted-foreground">
         <p>暂无净值历史数据</p>
       </div>
     );
@@ -300,8 +323,8 @@ export function NavHistoryChart({
               className={cn(
                 "text-xs px-3 py-1 h-7",
                 selectedRange === option.value
-                  ? "bg-slate-900 text-white hover:bg-slate-800"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
               )}
             >
               {option.label}
@@ -310,9 +333,9 @@ export function NavHistoryChart({
         </div>
         {estimateNav && (
           <div className="flex items-center gap-2 text-sm">
-            <span className="w-3 h-3 rounded-full bg-blue-500 border-2 border-white shadow-sm"></span>
-            <span className="text-slate-600">实时估值: </span>
-            <span className="font-mono font-semibold text-slate-900">
+            <span className="w-3 h-3 rounded-full bg-blue-500 border-2 border-background shadow-sm"></span>
+            <span className="text-muted-foreground">实时估值: </span>
+            <span className="font-mono font-semibold text-foreground">
               {estimateNav.toFixed(4)}
             </span>
           </div>
@@ -329,18 +352,18 @@ export function NavHistoryChart({
       </div>
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-slate-100">
+      <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-border">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-red-500 rounded-full"></div>
-          <span className="text-xs text-slate-600">上涨</span>
+          <div className="w-8 h-0.5 bg-[#F56C6C] rounded-full"></div>
+          <span className="text-xs text-muted-foreground">上涨</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-green-500 rounded-full"></div>
-          <span className="text-xs text-slate-600">下跌</span>
+          <div className="w-8 h-0.5 bg-[#67C23A] rounded-full"></div>
+          <span className="text-xs text-muted-foreground">下跌</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-white shadow-sm"></div>
-          <span className="text-xs text-slate-600">实时估值</span>
+          <div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-background shadow-sm"></div>
+          <span className="text-xs text-muted-foreground">实时估值</span>
         </div>
       </div>
     </div>

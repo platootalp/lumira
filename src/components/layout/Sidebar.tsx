@@ -31,7 +31,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { icon: LayoutDashboard, label: "资产概览", href: "/" },
+  { icon: LayoutDashboard, label: "资产概览", href: "/dashboard" },
   { icon: Wallet, label: "持仓明细", href: "/holdings" },
   { icon: TrendingUp, label: "收益分析", href: "/analysis" },
   { icon: Calculator, label: "定投计划", href: "/sip" },
@@ -61,15 +61,15 @@ function NavLink({
       href={item.href}
       className={cn(
         "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
-        "hover:bg-slate-100",
+        "hover:bg-accent",
         isActive
-          ? "bg-blue-50 text-blue-600 hover:bg-blue-100"
-          : "text-slate-600"
+          ? "bg-primary/10 text-primary hover:bg-primary/20"
+          : "text-muted-foreground"
       )}
     >
-      <Icon className={cn("w-5 h-5 flex-shrink-0", isActive && "text-blue-600")} />
+      <Icon className={cn("w-5 h-5 flex-shrink-0", isActive && "text-primary")} />
       {!collapsed && (
-        <span className={cn("font-medium text-sm", isActive && "text-blue-600")}>
+        <span className={cn("font-medium text-sm", isActive && "text-primary")}>
           {item.label}
         </span>
       )}
@@ -104,22 +104,22 @@ export function Sidebar({ collapsed = false, onCollapse }: SidebarProps) {
     <TooltipProvider delayDuration={0}>
       <aside
         className={cn(
-          "fixed left-0 top-0 h-full bg-white border-r border-slate-200/50 shadow-lg z-50",
+          "fixed left-0 top-0 h-full bg-card border-r border-border shadow-lg z-50",
           "transition-all duration-300 ease-in-out flex flex-col",
           isCollapsed ? "w-16" : "w-60"
         )}
       >
         <div
           className={cn(
-            "flex items-center h-16 px-4 border-b border-slate-100",
+            "flex items-center h-16 px-4 border-b border-border",
             isCollapsed && "justify-center px-2"
           )}
         >
-          <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 flex-shrink-0">
-            <Sparkles className="w-5 h-5 text-white" />
+          <div className="w-9 h-9 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25 flex-shrink-0">
+            <Sparkles className="w-5 h-5 text-primary-foreground" />
           </div>
           {!isCollapsed && (
-            <span className="ml-3 font-bold text-lg bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+            <span className="ml-3 font-bold text-lg text-foreground">
               Lumira
             </span>
           )}
@@ -136,11 +136,11 @@ export function Sidebar({ collapsed = false, onCollapse }: SidebarProps) {
           ))}
         </nav>
 
-        <div className="p-3 border-t border-slate-100">
+        <div className="p-3 border-t border-border">
           <button
             onClick={handleCollapse}
             className={cn(
-              "w-full flex items-center justify-center gap-2 px-3 py-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors text-sm",
+              "w-full flex items-center justify-center gap-2 px-3 py-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors text-sm",
               !isCollapsed && "justify-start"
             )}
           >
@@ -165,17 +165,17 @@ export function MobileSidebar() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button className="lg:hidden fixed top-4 left-4 z-40 p-2 hover:bg-slate-100 rounded-lg">
+        <button className="lg:hidden fixed top-4 left-4 z-40 p-2 hover:bg-accent rounded-lg">
           <Menu className="w-5 h-5" />
         </button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-60 p-0">
+      <SheetContent side="left" className="w-60 p-0 bg-card">
         <div className="flex flex-col h-full">
-          <div className="flex items-center h-16 px-4 border-b border-slate-100">
-            <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
-              <Sparkles className="w-5 h-5 text-white" />
+          <div className="flex items-center h-16 px-4 border-b border-border">
+            <div className="w-9 h-9 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25">
+              <Sparkles className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="ml-3 font-bold text-lg bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+            <span className="ml-3 font-bold text-lg text-foreground">
               Lumira
             </span>
           </div>
@@ -192,10 +192,10 @@ export function MobileSidebar() {
                   onClick={() => setOpen(false)}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
-                    "hover:bg-slate-100",
+                    "hover:bg-accent",
                     isActive
-                      ? "bg-blue-50 text-blue-600 hover:bg-blue-100"
-                      : "text-slate-600"
+                      ? "bg-primary/10 text-primary hover:bg-primary/20"
+                      : "text-muted-foreground"
                   )}
                 >
                   <Icon className="w-5 h-5" />

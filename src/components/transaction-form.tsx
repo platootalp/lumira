@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCreateHolding, useUpdateHolding } from "@/hooks/use-holdings";
 import { useCreateTransaction, useTransactionsByHolding } from "@/hooks/use-transactions";
@@ -140,7 +141,7 @@ export function TransactionForm({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* 交易类型 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               交易类型
             </label>
             <div className="flex gap-2">
@@ -150,8 +151,8 @@ export function TransactionForm({
                 className={cn(
                   "flex-1 py-2 px-4 rounded-lg border flex items-center justify-center gap-2",
                   type === "BUY"
-                    ? "bg-blue-50 border-blue-500 text-blue-700"
-                    : "hover:bg-gray-50"
+                    ? "bg-primary/10 border-primary text-primary"
+                    : "hover:bg-muted"
                 )}
               >
                 <Plus className="w-4 h-4" />
@@ -163,8 +164,8 @@ export function TransactionForm({
                 className={cn(
                   "flex-1 py-2 px-4 rounded-lg border flex items-center justify-center gap-2",
                   type === "SELL"
-                    ? "bg-orange-50 border-orange-500 text-orange-700"
-                    : "hover:bg-gray-50"
+                    ? "bg-orange-500/10 border-orange-500 text-orange-600"
+                    : "hover:bg-muted"
                 )}
               >
                 <Minus className="w-4 h-4" />
@@ -175,25 +176,24 @@ export function TransactionForm({
 
           {/* 交易日期 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              交易日期 <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
+              交易日期 <span className="text-destructive">*</span>
             </label>
-            <input
+            <Input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
               required
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {/* 份额和价格 */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                份额 <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
+                份额 <span className="text-destructive">*</span>
               </label>
-              <input
+              <Input
                 type="number"
                 value={shares}
                 onChange={(e) => setShares(e.target.value)}
@@ -201,14 +201,13 @@ export function TransactionForm({
                 step="0.01"
                 min="0.01"
                 required
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                单价 <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
+                单价 <span className="text-destructive">*</span>
               </label>
-              <input
+              <Input
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
@@ -216,7 +215,6 @@ export function TransactionForm({
                 step="0.0001"
                 min="0.0001"
                 required
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -224,38 +222,36 @@ export function TransactionForm({
           {/* 手续费和备注 */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 手续费
               </label>
-              <input
+              <Input
                 type="number"
                 value={fee}
                 onChange={(e) => setFee(e.target.value)}
                 placeholder="0.00"
                 step="0.01"
                 min="0"
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 备注
               </label>
-              <input
+              <Input
                 type="text"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="选填"
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
 
           {/* 金额预览 */}
           {amount > 0 && (
-            <div className="bg-gray-50 p-3 rounded-lg">
+            <div className="bg-muted p-3 rounded-lg">
               <div className="flex justify-between">
-                <span className="text-gray-600">交易金额:</span>
+                <span className="text-muted-foreground">交易金额:</span>
                 <span className="font-medium">
                   {type === "BUY" ? "-" : "+"}¥{amount.toFixed(2)}
                 </span>

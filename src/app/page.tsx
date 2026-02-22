@@ -1,239 +1,230 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { PortfolioChart } from "@/components/portfolio-chart";
-import { useHoldings } from "@/hooks/use-holdings";
-import { getBatchEstimates, calculateEstimateProfit, getFundYesterdayNav } from "@/services/fund";
-import { formatNumber, cn } from "@/lib/utils";
-import { 
-  RefreshCw, 
-  TrendingUp, 
-  TrendingDown, 
-  PieChart,
-  Activity,
-  ArrowUpRight,
-  Sparkles
+import {
+  Sparkles,
+  TrendingUp,
+  Wallet,
+  Calculator,
+  BarChart3,
+  Shield,
+  ArrowRight,
+  CheckCircle,
 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { FundEstimate, HoldingWithEstimate } from "@/types";
 
-export default function HomePage() {
-  const { data: holdings = [], error } = useHoldings();
-  const [mounted, setMounted] = useState(false);
-  const [estimates, setEstimates] = useState<Map<string, FundEstimate>>(new Map());
-  const [yesterdayNavs, setYesterdayNavs] = useState<Map<string, number | null>>(new Map());
-  const [isRefreshing, setIsRefreshing] = useState(false);
+const features = [
+  {
+    icon: Wallet,
+    title: "资产概览",
+    description: "实时跟踪您的投资组合，一目了然查看总资产、累计收益和今日预估收益",
+  },
+  {
+    icon: TrendingUp,
+    title: "持仓管理",
+    description: "精细化管理每只基金的持仓情况，支持添加、编辑和删除持仓记录",
+  },
+  {
+    icon: Calculator,
+    title: "定投计划",
+    description: "智能定投计算器，帮助您规划定期定额投资策略，预估未来收益",
+  },
+  {
+    icon: BarChart3,
+    title: "数据分析",
+    description: "多维度的数据可视化分析，包括资产配置、收益分布和收益走势图表",
+  },
+];
 
-  const holdingsWithEstimates: HoldingWithEstimate[] = holdings.map((holding) => {
-    const estimate = estimates.get(holding.fundId);
-    const yesterdayNav = yesterdayNavs.get(holding.fundId);
-    const estimateNav = estimate?.estimateNav || holding.avgCost;
-    const profit = calculateEstimateProfit(
-      holding.totalShares,
-      holding.avgCost,
-      estimateNav,
-      yesterdayNav
-    );
-    return {
-      ...holding,
-      estimateNav: estimate?.estimateNav,
-      estimateTime: estimate?.estimateTime,
-      marketValue: profit.marketValue,
-      profit: profit.profit,
-      profitRate: profit.profitRate,
-      todayProfit: profit.todayProfit,
-    };
-  });
+const highlights = [
+  "实时基金估值数据",
+  "完整的交易记录管理",
+  "基金对比分析工具",
+  "基金排行榜查询",
+  "Excel 数据导入导出",
+  "截图 OCR 智能识别",
+];
 
-  const summary = {
-    totalAssets: holdingsWithEstimates.reduce((sum, h) => sum + h.marketValue, 0),
-    totalCost: holdingsWithEstimates.reduce((sum, h) => sum + h.totalCost, 0),
-    totalProfit: holdingsWithEstimates.reduce((sum, h) => sum + h.profit, 0),
-    todayProfit: holdingsWithEstimates.reduce((sum, h) => sum + h.todayProfit, 0),
-    holdingCount: holdings.length
-  };
-  
-  const totalProfitRate = summary.totalCost > 0 ? (summary.totalProfit / summary.totalCost) * 100 : 0;
-  const isProfit = summary.totalProfit >= 0;
-  const isTodayProfit = summary.todayProfit >= 0;
-
-  useEffect(() => { setMounted(true); }, []);
-
-  const loadEstimates = useCallback(async () => {
-    if (holdings.length === 0) return;
-    setIsRefreshing(true);
-    try {
-      const fundCodes = holdings.map(h => h.fundId);
-      const estimatesMap = await getBatchEstimates(fundCodes);
-
-      const yesterdayNavs = new Map<string, number | null>();
-      for (const code of fundCodes) {
-        const yesterdayNav = await getFundYesterdayNav(code);
-        yesterdayNavs.set(code, yesterdayNav);
-      }
-
-      setEstimates(estimatesMap);
-      setYesterdayNavs(yesterdayNavs);
-    } catch (error) {
-      console.error("加载估值失败:", error);
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [holdings]);
-
-  useEffect(() => { loadEstimates(); }, [loadEstimates]);
-
-  if (!mounted) {
-    return <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50" />;
-  }
-
+export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4 lg:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
-            <Sparkles className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">资产概览</h1>
-            <p className="text-sm text-slate-500">实时跟踪您的投资组合表现</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="group relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <CardHeader className="pb-3">
-              <CardDescription className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                  <PieChart className="w-4 h-4 text-blue-500" />
-                </div>
-                总资产
-              </CardDescription>
-              <CardTitle className="text-3xl font-bold amount-display text-slate-900">
-                ¥{formatNumber(summary.totalAssets)}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-slate-500 flex items-center gap-1">
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-medium">
-                  {summary.holdingCount} 只基金
-                </span>
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className={cn("group relative overflow-hidden", isProfit ? "border-red-100/50" : "border-emerald-100/50")}>
-            <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500", isProfit ? "bg-gradient-to-br from-red-500/5 to-orange-500/5" : "bg-gradient-to-br from-emerald-500/5 to-teal-500/5")} />
-            <CardHeader className="pb-3">
-              <CardDescription className="flex items-center gap-2">
-                <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", isProfit ? "bg-red-50" : "bg-emerald-50")}>
-                  {isProfit ? (
-                    <TrendingUp className="w-4 h-4 text-red-500" />
-                  ) : (
-                    <TrendingDown className="w-4 h-4 text-emerald-500" />
-                  )}
-                </div>
-                累计收益
-              </CardDescription>
-              <CardTitle className={cn("text-3xl font-bold amount-display", isProfit ? "profit-up" : "profit-down")}>
-                {isProfit ? "+" : ""}¥{formatNumber(summary.totalProfit)}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className={cn("inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-semibold", isProfit ? "bg-red-50 text-red-600" : "bg-emerald-50 text-emerald-600")}>
-                {isProfit ? "+" : ""}{formatNumber(totalProfitRate)}%
-                <ArrowUpRight className="w-4 h-4" />
+    <div className="min-h-screen bg-background">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/90 rounded-lg flex items-center justify-center shadow-lg shadow-primary/25">
+                <Sparkles className="w-4 h-4 text-primary-foreground" />
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className={cn("group relative overflow-hidden", isTodayProfit ? "border-red-100/50" : "border-emerald-100/50")}>
-            <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500", isTodayProfit ? "bg-gradient-to-br from-red-500/5 to-orange-500/5" : "bg-gradient-to-br from-emerald-500/5 to-teal-500/5")} />
-            <CardHeader className="pb-3">
-              <CardDescription className="flex items-center gap-2">
-                <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", isTodayProfit ? "bg-red-50" : "bg-emerald-50")}>
-                  <Activity className={cn("w-4 h-4", isTodayProfit ? "text-red-500" : "text-emerald-500")} />
-                </div>
-                今日预估收益
-              </CardDescription>
-              <CardTitle className={cn("text-3xl font-bold amount-display", isTodayProfit ? "profit-up" : "profit-down")}>
-                {isTodayProfit ? "+" : ""}¥{formatNumber(summary.todayProfit)}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-slate-500">基于实时估值计算</p>
-            </CardContent>
-          </Card>
+              <span className="font-bold text-xl text-foreground">
+                Lumira
+              </span>
+            </div>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/login"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                登录
+              </Link>
+              <Button asChild size="sm">
+                <Link href="/register">注册</Link>
+              </Button>
+            </div>
+          </div>
         </div>
+      </nav>
 
-        {holdings.length > 0 && (
-          <Card className="mb-8">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">图表分析</CardTitle>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={loadEstimates}
-                  disabled={isRefreshing}
+      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8">
+            <Sparkles className="w-4 h-4" />
+            面向散户投资者的基金持仓管理工具
+          </div>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
+            智能管理您的
+            <span className="bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+              基金投资
+            </span>
+          </h1>
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+            Lumira 帮助您轻松跟踪基金持仓、分析投资收益、制定定投计划，
+            让投资决策更加科学和高效。
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button asChild size="lg" className="h-12 px-8 text-base">
+              <Link href="/register">
+                免费开始使用
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base">
+              <Link href="/login">已有账户？登录</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-muted/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-foreground mb-4">核心功能</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              全方位的基金投资管理工具，满足您从持仓跟踪到收益分析的各种需求
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <div
+                  key={feature.title}
+                  className="group p-6 bg-background rounded-2xl border border-border/50 shadow-sm hover:shadow-lg hover:border-blue-200 transition-all duration-300"
                 >
-                  <RefreshCw className={cn("w-4 h-4 mr-1.5", isRefreshing && "animate-spin")} />
-                  {isRefreshing ? "更新中" : "刷新"}
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="allocation">
-                <TabsList className="mb-6 bg-slate-100 p-1 rounded-xl">
-                  <TabsTrigger value="allocation" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">
-                    资产配置
-                  </TabsTrigger>
-                  <TabsTrigger value="profit" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">
-                    收益分布
-                  </TabsTrigger>
-                  <TabsTrigger value="trend" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">
-                    收益走势
-                  </TabsTrigger>
-                </TabsList>
-                <TabsContent value="allocation">
-                  <PortfolioChart holdings={holdingsWithEstimates} type="allocation" />
-                </TabsContent>
-                <TabsContent value="profit">
-                  <PortfolioChart holdings={holdingsWithEstimates} type="profit" />
-                </TabsContent>
-                <TabsContent value="trend">
-                  <PortfolioChart holdings={holdingsWithEstimates} type="trend" />
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-        )}
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/90 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Icon className="w-6 h-6 text-primary-foreground" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
-        {error && (
-          <Card className="bg-red-50/80 border-red-200 mb-8">
-            <CardContent className="py-6">
-              <p className="text-red-600">加载失败: {error.message}</p>
-            </CardContent>
-          </Card>
-        )}
-
-        <div className="p-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl">
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              <span className="text-amber-600 text-xl">⚠️</span>
-            </div>
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h4 className="font-semibold text-amber-900 mb-1">风险提示</h4>
-              <p className="text-sm text-amber-700 leading-relaxed">
-                本页面展示的基金估值数据仅供参考，实际净值以基金公司官方披露为准。市场有风险，投资需谨慎。过往业绩不代表未来表现。
+              <h2 className="text-3xl font-bold text-foreground mb-6">
+                为什么选择 Lumira？
+              </h2>
+              <p className="text-muted-foreground mb-8 leading-relaxed">
+                我们致力于提供最优质的基金投资管理体验，通过实时数据同步、
+                智能分析工具和便捷的数据管理功能，帮助您做出更明智的投资决策。
               </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {highlights.map((item) => (
+                  <div key={item} className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+                    <span className="text-muted-foreground">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-3xl transform rotate-3" />
+              <div className="relative bg-background p-8 rounded-3xl border border-border/50 shadow-xl">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/90 rounded-xl flex items-center justify-center">
+                    <Shield className="w-6 h-6 text-primary-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">安全可靠</h3>
+                    <p className="text-sm text-muted-foreground">您的数据安全是我们的首要任务</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-muted rounded-xl">
+                    <span className="text-muted-foreground">数据加密存储</span>
+                    <CheckCircle className="w-5 h-5 text-fund-down" />
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-muted rounded-xl">
+                    <span className="text-muted-foreground">JWT 身份认证</span>
+                    <CheckCircle className="w-5 h-5 text-fund-down" />
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-muted rounded-xl">
+                    <span className="text-muted-foreground">本地数据备份</span>
+                    <CheckCircle className="w-5 h-5 text-fund-down" />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <section className="py-20 bg-gradient-to-br from-blue-600 to-purple-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-primary-foreground mb-4">
+            开始您的基金投资之旅
+          </h2>
+          <p className="text-primary-foreground/80 max-w-2xl mx-auto mb-8">
+            立即注册，免费使用所有功能。无需信用卡，随时随地管理您的投资组合。
+          </p>
+          <Button
+            asChild
+            size="lg"
+            className="h-12 px-8 text-base bg-background text-primary hover:bg-primary/10"
+          >
+            <Link href="/register">
+              立即注册
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
+          </Button>
+        </div>
+      </section>
+
+      <footer className="py-12 bg-muted text-muted-foreground">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/90 rounded-lg flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <span className="font-bold text-lg text-foreground">Lumira</span>
+            </div>
+            <p className="text-sm">
+              数据仅供参考，不构成投资建议。市场有风险，投资需谨慎。
+            </p>
+            <p className="text-sm"> 2024 Lumira. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

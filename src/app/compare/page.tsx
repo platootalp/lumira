@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 import { ArrowLeft, Plus, X, TrendingUp, Search, Trophy } from "lucide-react";
 import Link from "next/link";
 import { searchFunds, getFundEstimate } from "@/services/fund";
@@ -72,9 +73,9 @@ export default function ComparePage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-background">
       {/* 顶部导航 */}
-      <header className="bg-white border-b sticky top-0 z-10">
+      <header className="bg-background border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
@@ -87,7 +88,7 @@ export default function ComparePage() {
                 <ArrowLeft className="w-4 h-4 mr-1" />
                 返回
               </Button>
-              <h1 className="text-xl font-bold text-gray-900">基金对比</h1>
+              <h1 className="text-xl font-bold text-foreground">基金对比</h1>
             </div>
             <div className="flex gap-2">
               <Link href="/rankings">
@@ -111,14 +112,14 @@ export default function ComparePage() {
           </CardHeader>
           <CardContent>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 placeholder="搜索基金名称或代码"
                 disabled={selectedFunds.length >= maxCompare}
-                className="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                className="pl-10"
               />
             </div>
 
@@ -129,15 +130,15 @@ export default function ComparePage() {
                   <button
                     key={fund.id}
                     onClick={() => addFund(fund)}
-                    className="w-full text-left p-3 hover:bg-gray-50 flex justify-between items-center"
+                    className="w-full text-left p-3 hover:bg-accent flex justify-between items-center"
                   >
                     <div>
                       <div className="font-medium">{fund.name}</div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-muted-foreground">
                         {fund.id} · {fund.company}
                       </div>
                     </div>
-                    <Plus className="w-5 h-5 text-blue-500" />
+                    <Plus className="w-5 h-5 text-primary" />
                   </button>
                 ))}
               </div>
@@ -149,12 +150,12 @@ export default function ComparePage() {
                 {selectedFunds.map((fund) => (
                   <div
                     key={fund.id}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-sm"
+                    className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm"
                   >
                     <span className="truncate max-w-[150px]">{fund.name}</span>
                     <button
                       onClick={() => removeFund(fund.id)}
-                      className="hover:text-blue-900"
+                      className="hover:text-primary"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -176,7 +177,7 @@ export default function ComparePage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left py-3 px-4 font-medium text-gray-500 w-32">
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground w-32">
                         对比项目
                       </th>
                       {selectedFunds.map((fund) => (
@@ -184,8 +185,8 @@ export default function ComparePage() {
                           key={fund.id}
                           className="text-left py-3 px-4 font-medium min-w-[200px]"
                         >
-                          <div className="font-bold text-gray-900">{fund.name}</div>
-                          <div className="text-sm text-gray-500">{fund.id}</div>
+                          <div className="font-bold text-foreground">{fund.name}</div>
+                          <div className="text-sm text-muted-foreground">{fund.id}</div>
                         </th>
                       ))}
                     </tr>
@@ -193,7 +194,7 @@ export default function ComparePage() {
                   <tbody className="divide-y">
                     {/* 实时涨跌幅 */}
                     <tr>
-                      <td className="py-3 px-4 text-gray-500">实时涨跌幅</td>
+                      <td className="py-3 px-4 text-muted-foreground">实时涨跌幅</td>
                       {selectedFunds.map((fund) => {
                         const change = fund.estimate?.estimateChangePercent || 0;
                         const isUp = change >= 0;
@@ -215,7 +216,7 @@ export default function ComparePage() {
 
                     {/* 最新净值 */}
                     <tr>
-                      <td className="py-3 px-4 text-gray-500">最新净值</td>
+                      <td className="py-3 px-4 text-muted-foreground">最新净值</td>
                       {selectedFunds.map((fund) => (
                         <td key={fund.id} className="py-3 px-4 font-mono">
                           {fund.nav?.toFixed(4) || "-"}
@@ -225,7 +226,7 @@ export default function ComparePage() {
 
                     {/* 实时估值 */}
                     <tr>
-                      <td className="py-3 px-4 text-gray-500">实时估值</td>
+                      <td className="py-3 px-4 text-muted-foreground">实时估值</td>
                       {selectedFunds.map((fund) => (
                         <td key={fund.id} className="py-3 px-4 font-mono">
                           {fund.estimate?.estimateNav?.toFixed(4) || "-"}
@@ -235,10 +236,10 @@ export default function ComparePage() {
 
                     {/* 基金类型 */}
                     <tr>
-                      <td className="py-3 px-4 text-gray-500">基金类型</td>
+                      <td className="py-3 px-4 text-muted-foreground">基金类型</td>
                       {selectedFunds.map((fund) => (
                         <td key={fund.id} className="py-3 px-4">
-                          <span className="px-2 py-1 bg-gray-100 rounded text-sm">
+                          <span className="px-2 py-1 bg-muted rounded text-sm">
                             {fund.type}
                           </span>
                         </td>
@@ -247,7 +248,7 @@ export default function ComparePage() {
 
                     {/* 基金公司 */}
                     <tr>
-                      <td className="py-3 px-4 text-gray-500">基金公司</td>
+                      <td className="py-3 px-4 text-muted-foreground">基金公司</td>
                       {selectedFunds.map((fund) => (
                         <td key={fund.id} className="py-3 px-4 text-sm">
                           {fund.company}
@@ -257,7 +258,7 @@ export default function ComparePage() {
 
                     {/* 管理费率 */}
                     <tr>
-                      <td className="py-3 px-4 text-gray-500">管理费率</td>
+                      <td className="py-3 px-4 text-muted-foreground">管理费率</td>
                       {selectedFunds.map((fund) => (
                         <td key={fund.id} className="py-3 px-4">
                           {fund.feeRate?.management
@@ -269,7 +270,7 @@ export default function ComparePage() {
 
                     {/* 申购费率 */}
                     <tr>
-                      <td className="py-3 px-4 text-gray-500">申购费率</td>
+                      <td className="py-3 px-4 text-muted-foreground">申购费率</td>
                       {selectedFunds.map((fund) => (
                         <td key={fund.id} className="py-3 px-4">
                           {fund.feeRate?.buy
@@ -286,14 +287,14 @@ export default function ComparePage() {
         ) : (
           <Card className="text-center py-12">
             <CardContent>
-              <TrendingUp className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-1">
+              <TrendingUp className="w-12 h-12 text-muted-foreground/50 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-foreground mb-1">
                 开始基金对比
               </h3>
-              <p className="text-gray-500 mb-4">
+              <p className="text-muted-foreground mb-4">
                 搜索并添加基金，对比它们的业绩表现
               </p>
-              <p className="text-sm text-gray-400">最多可同时对比 {maxCompare} 只基金</p>
+              <p className="text-sm text-muted-foreground">最多可同时对比 {maxCompare} 只基金</p>
             </CardContent>
           </Card>
         )}

@@ -70,13 +70,13 @@ export function AssetDistribution({ holdings }: AssetDistributionProps) {
     if (active && payload && payload.length) {
       const data = payload[0].payload as ChartDataItem;
       return (
-        <div className="bg-white border border-slate-200 rounded-lg shadow-lg p-3">
-          <p className="font-medium text-slate-900 mb-1">{data.name}</p>
-          <p className="text-sm text-slate-600">
-            金额: <span className="font-semibold">¥{data.value.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+        <div className="bg-card border border-border rounded-lg shadow-lg p-3">
+          <p className="font-medium text-foreground mb-1">{data.name}</p>
+          <p className="text-sm text-muted-foreground">
+            金额: <span className="font-semibold text-foreground">¥{data.value.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
           </p>
-          <p className="text-sm text-slate-600">
-            占比: <span className="font-semibold">{data.percentage.toFixed(2)}%</span>
+          <p className="text-sm text-muted-foreground">
+            占比: <span className="font-semibold text-foreground">{data.percentage.toFixed(2)}%</span>
           </p>
         </div>
       );
@@ -97,7 +97,7 @@ export function AssetDistribution({ holdings }: AssetDistributionProps) {
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: entry.color }}
               />
-              <span className="text-sm text-slate-600">
+              <span className="text-sm text-muted-foreground">
                 {data.name} ({data.percentage.toFixed(1)}%)
               </span>
             </div>
@@ -110,9 +110,9 @@ export function AssetDistribution({ holdings }: AssetDistributionProps) {
   if (holdings.length === 0 || groupedData.totalValue === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+        <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-4">
           <svg
-            className="w-10 h-10 text-slate-400"
+            className="w-10 h-10 text-muted-foreground"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -131,8 +131,8 @@ export function AssetDistribution({ holdings }: AssetDistributionProps) {
             />
           </svg>
         </div>
-        <h3 className="text-lg font-medium text-slate-900 mb-2">暂无资产数据</h3>
-        <p className="text-sm text-slate-500 max-w-xs">
+        <h3 className="text-lg font-medium text-foreground mb-2">暂无资产数据</h3>
+        <p className="text-sm text-muted-foreground max-w-xs">
           添加持仓后将显示资产分布图表
         </p>
       </div>
@@ -170,17 +170,17 @@ export function AssetDistribution({ holdings }: AssetDistributionProps) {
         </ResponsiveContainer>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-slate-100">
+      <div className="mt-4 pt-4 border-t border-border">
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center">
-            <p className="text-sm text-slate-500 mb-1">总资产</p>
-            <p className="text-lg font-semibold text-slate-900">
+            <p className="text-sm text-muted-foreground mb-1">总资产</p>
+            <p className="text-lg font-semibold text-foreground">
               ¥{groupedData.totalValue.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
           </div>
           <div className="text-center">
-            <p className="text-sm text-slate-500 mb-1">基金类型</p>
-            <p className="text-lg font-semibold text-slate-900">
+            <p className="text-sm text-muted-foreground mb-1">基金类型</p>
+            <p className="text-lg font-semibold text-foreground">
               {groupedData.data.length} 种
             </p>
           </div>

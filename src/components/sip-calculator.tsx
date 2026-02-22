@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatNumber } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 import { Calculator } from "lucide-react";
 
 interface SIPCalculatorProps {
@@ -69,30 +70,28 @@ export function SIPCalculator({ className }: SIPCalculatorProps) {
           {/* 输入区域 */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 每月定投金额 (元)
               </label>
-              <input
+              <Input
                 type="number"
                 value={monthlyAmount}
                 onChange={(e) => setMonthlyAmount(e.target.value)}
                 min="1"
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 定投月数
               </label>
-              <input
+              <Input
                 type="number"
                 value={months}
                 onChange={(e) => setMonths(e.target.value)}
                 min="1"
                 max="360"
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {Math.floor(parseInt(months) / 12)} 年 {parseInt(months) % 12} 个月
               </p>
             </div>
@@ -100,28 +99,26 @@ export function SIPCalculator({ className }: SIPCalculatorProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 预期年化收益率 (%)
               </label>
-              <input
+              <Input
                 type="number"
                 value={annualRate}
                 onChange={(e) => setAnnualRate(e.target.value)}
                 step="0.1"
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 预期未来净值 (可选)
               </label>
-              <input
+              <Input
                 type="number"
                 value={currentNav}
                 onChange={(e) => setCurrentNav(e.target.value)}
                 step="0.0001"
                 min="0.0001"
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -130,14 +127,14 @@ export function SIPCalculator({ className }: SIPCalculatorProps) {
           {result && (
             <div className="mt-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-500">总投入</p>
+                <div className="bg-primary/10 p-4 rounded-lg">
+                  <p className="text-sm text-muted-foreground">总投入</p>
                   <p className="text-xl font-mono font-medium">
                     ¥{formatNumber(result.totalInvested)}
                   </p>
                 </div>
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-500">预估总资产</p>
+                <div className="bg-green-500/10 p-4 rounded-lg">
+                  <p className="text-sm text-muted-foreground">预估总资产</p>
                   <p className="text-xl font-mono font-medium text-green-600">
                     ¥{formatNumber(result.futureValue)}
                   </p>
@@ -145,28 +142,28 @@ export function SIPCalculator({ className }: SIPCalculatorProps) {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-500">预估收益</p>
-                  <p className="text-xl font-mono font-medium text-red-500">
+                <div className="bg-muted p-4 rounded-lg">
+                  <p className="text-sm text-muted-foreground">预估收益</p>
+                  <p className="text-xl font-mono font-medium text-fund-up">
                     +¥{formatNumber(result.totalReturn)}
                   </p>
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-fund-up">
                     +{result.returnRate.toFixed(2)}%
                   </p>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-500">获得份额</p>
+                <div className="bg-muted p-4 rounded-lg">
+                  <p className="text-sm text-muted-foreground">获得份额</p>
                   <p className="text-xl font-mono font-medium">
                     {formatNumber(result.shares, 2)}
                   </p>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     平均成本 ¥{result.avgCost.toFixed(4)}
                   </p>
                 </div>
               </div>
 
               {/* 定投说明 */}
-              <div className="bg-amber-50 p-4 rounded-lg text-sm text-amber-800">
+              <div className="bg-amber-500/10 p-4 rounded-lg text-sm text-amber-700">
                 <p className="font-medium mb-1">💡 定投提示</p>
                 <ul className="space-y-1 text-xs">
                   <li>• 年化收益率 {annualRate}% 仅为假设，实际收益可能不同</li>

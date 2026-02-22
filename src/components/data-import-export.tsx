@@ -8,6 +8,7 @@ import { useTransactions } from "@/hooks/use-transactions";
 import { downloadFile, readFile } from "@/lib/utils";
 import { Upload, FileJson, FileSpreadsheet, AlertTriangle, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 import type { Holding } from "@/types";
 
 interface DataImportExportProps {
@@ -198,7 +199,7 @@ export function DataImportExport({ onImportSuccess }: DataImportExportProps) {
       <CardContent className="space-y-6">
         {/* 导出区域 */}
         <div>
-          <h4 className="text-sm font-medium text-gray-900 mb-3">导出数据</h4>
+          <h4 className="text-sm font-medium text-foreground mb-3">导出数据</h4>
           <div className="flex flex-wrap gap-3">
             <Button
               variant="outline"
@@ -219,18 +220,18 @@ export function DataImportExport({ onImportSuccess }: DataImportExportProps) {
               {isExporting ? "导出中..." : "导出CSV"}
             </Button>
           </div>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-muted-foreground mt-2">
             JSON 包含完整数据，CSV 仅包含持仓信息
           </p>
         </div>
 
         {/* 分隔线 */}
-        <hr className="border-gray-200" />
+        <hr className="border-border" />
 
         {/* 导入区域 */}
         <div>
-          <h4 className="text-sm font-medium text-gray-900 mb-3">导入数据</h4>
-          <input
+          <h4 className="text-sm font-medium text-foreground mb-3">导入数据</h4>
+          <Input
             ref={fileInputRef}
             type="file"
             accept=".json,.csv"
@@ -246,7 +247,7 @@ export function DataImportExport({ onImportSuccess }: DataImportExportProps) {
             <Upload className="w-4 h-4" />
             {isImporting || createHolding.isPending ? "导入中..." : "选择文件导入 (JSON/CSV)"}
           </Button>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-muted-foreground mt-2">
             支持从其他基金App导出的数据（需符合格式）
           </p>
         </div>
@@ -267,12 +268,12 @@ export function DataImportExport({ onImportSuccess }: DataImportExportProps) {
         )}
 
         {/* 格式说明 */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h4 className="text-sm font-medium text-gray-900 mb-2">CSV 格式要求</h4>
-          <p className="text-xs text-gray-600 mb-2">
+        <div className="bg-background p-4 rounded-lg">
+          <h4 className="text-sm font-medium text-foreground mb-2">CSV 格式要求</h4>
+          <p className="text-xs text-muted-foreground mb-2">
             第一行为表头，包含以下字段：
           </p>
-          <code className="text-xs bg-gray-200 px-2 py-1 rounded">
+          <code className="text-xs bg-muted px-2 py-1 rounded">
             基金代码,基金名称,持有份额,平均成本,总成本,购买渠道,分组
           </code>
         </div>

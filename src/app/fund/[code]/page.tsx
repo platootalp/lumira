@@ -88,17 +88,17 @@ export default function FundDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-400">加载中...</div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-muted-foreground">加载中...</div>
       </div>
     );
   }
 
   if (!estimate) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-500 mb-4">无法获取基金信息</p>
+          <p className="text-muted-foreground mb-4">无法获取基金信息</p>
           <Button onClick={() => router.push("/")}>返回首页</Button>
         </div>
       </div>
@@ -106,9 +106,9 @@ export default function FundDetailPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-background">
       {/* 顶部导航 */}
-      <header className="bg-white border-b sticky top-0 z-10">
+      <header className="bg-background border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
             <Button
@@ -121,10 +121,10 @@ export default function FundDetailPage() {
               返回
             </Button>
             <div>
-              <h1 className="text-lg font-bold text-gray-900">
+              <h1 className="text-lg font-bold text-foreground">
                 {estimate.fundName}
               </h1>
-              <p className="text-sm text-gray-500">{fundCode}</p>
+              <p className="text-sm text-muted-foreground">{fundCode}</p>
             </div>
             <Button
               size="sm"
@@ -148,7 +148,7 @@ export default function FundDetailPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-500">{estimate.lastNavDate}</p>
+              <p className="text-sm text-muted-foreground">{estimate.lastNavDate}</p>
             </CardContent>
           </Card>
 
@@ -183,7 +183,7 @@ export default function FundDetailPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {holding?.totalShares.toFixed(2)} 份
                   </p>
                 </CardContent>
@@ -240,7 +240,7 @@ export default function FundDetailPage() {
                     estimateTime={estimate?.estimateTime}
                   />
                 ) : (
-                  <p className="text-gray-500">暂无净值历史数据</p>
+                  <p className="text-muted-foreground">暂无净值历史数据</p>
                 )}
               </CardContent>
             </Card>
@@ -253,7 +253,7 @@ export default function FundDetailPage() {
               </CardHeader>
               <CardContent>
                 {isLoadingTransactions ? (
-                  <div className="text-center py-12 text-gray-500">
+                  <div className="text-center py-12 text-muted-foreground">
                     <p>加载中...</p>
                   </div>
                 ) : transactions.length > 0 ? (
@@ -261,7 +261,7 @@ export default function FundDetailPage() {
                     {transactions.map(tx => (
                       <div
                         key={tx.id}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                        className="flex items-center justify-between p-3 bg-background rounded-lg"
                       >
                         <div className="flex items-center gap-3">
                           <div className={cn(
@@ -278,14 +278,14 @@ export default function FundDetailPage() {
                             <p className="font-medium">
                               {tx.type === "BUY" ? "买入" : "卖出"}
                             </p>
-                            <p className="text-sm text-gray-500">{tx.date}</p>
+                            <p className="text-sm text-muted-foreground">{tx.date}</p>
                           </div>
                         </div>
                         <div className="text-right">
                           <p className="font-medium">
                             {tx.type === "BUY" ? "-" : "+"}¥{formatNumber(tx.amount)}
                           </p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-muted-foreground">
                             {tx.shares.toFixed(2)} 份 @ {tx.price.toFixed(4)}
                           </p>
                         </div>
@@ -293,7 +293,7 @@ export default function FundDetailPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-12 text-gray-500">
+                  <div className="text-center py-12 text-muted-foreground">
                     <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>暂无交易记录</p>
                   </div>
@@ -311,14 +311,14 @@ export default function FundDetailPage() {
                 {holding ? (
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="p-4 bg-gray-50 rounded-lg">
-                        <p className="text-sm text-gray-500">总成本</p>
+                      <div className="p-4 bg-background rounded-lg">
+                        <p className="text-sm text-muted-foreground">总成本</p>
                         <p className="text-xl font-mono font-medium">
                           ¥{formatNumber(holding.totalCost)}
                         </p>
                       </div>
-                      <div className="p-4 bg-gray-50 rounded-lg">
-                        <p className="text-sm text-gray-500">平均成本</p>
+                      <div className="p-4 bg-background rounded-lg">
+                        <p className="text-sm text-muted-foreground">平均成本</p>
                         <p className="text-xl font-mono font-medium">
                           ¥{holding.avgCost.toFixed(4)}
                         </p>
@@ -327,14 +327,14 @@ export default function FundDetailPage() {
                     
                     {profit && (
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="p-4 bg-gray-50 rounded-lg">
-                          <p className="text-sm text-gray-500">当前市值</p>
+                        <div className="p-4 bg-background rounded-lg">
+                          <p className="text-sm text-muted-foreground">当前市值</p>
                           <p className="text-xl font-mono font-medium">
                             ¥{formatNumber(profit.marketValue)}
                           </p>
                         </div>
-                        <div className="p-4 bg-gray-50 rounded-lg">
-                          <p className="text-sm text-gray-500">盈亏金额</p>
+                        <div className="p-4 bg-background rounded-lg">
+                          <p className="text-sm text-muted-foreground">盈亏金额</p>
                           <p className={cn(
                             "text-xl font-mono font-medium",
                             isProfit ? "text-red-500" : "text-green-500"
@@ -346,21 +346,21 @@ export default function FundDetailPage() {
                     )}
                     
                     {holding.channel && (
-                      <div className="p-4 bg-gray-50 rounded-lg">
-                        <p className="text-sm text-gray-500">购买渠道</p>
+                      <div className="p-4 bg-background rounded-lg">
+                        <p className="text-sm text-muted-foreground">购买渠道</p>
                         <p className="font-medium">{holding.channel}</p>
                       </div>
                     )}
                     
                     {holding.group && (
-                      <div className="p-4 bg-gray-50 rounded-lg">
-                        <p className="text-sm text-gray-500">分组</p>
+                      <div className="p-4 bg-background rounded-lg">
+                        <p className="text-sm text-muted-foreground">分组</p>
                         <p className="font-medium">{holding.group}</p>
                       </div>
                     )}
                   </div>
                 ) : (
-                  <p className="text-gray-500">您尚未持有该基金</p>
+                  <p className="text-muted-foreground">您尚未持有该基金</p>
                 )}
               </CardContent>
             </Card>
@@ -388,5 +388,5 @@ export default function FundDetailPage() {
 
 // CardDescription 兼容组件
 function CardDescription({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <p className={cn("text-sm text-gray-500", className)}>{children}</p>;
+  return <p className={cn("text-sm text-muted-foreground", className)}>{children}</p>;
 }

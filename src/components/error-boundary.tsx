@@ -53,11 +53,11 @@ export class ErrorBoundary extends React.Component<Props, State> {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-600 mb-4">
+            <p className="text-muted-foreground mb-4">
               组件加载时发生错误，请尝试刷新页面。
             </p>
             {this.state.error && (
-              <pre className="bg-gray-100 p-3 rounded text-sm text-gray-700 mb-4 overflow-auto">
+              <pre className="bg-muted p-3 rounded text-sm text-gray-700 mb-4 overflow-auto">
                 {this.state.error.message}
               </pre>
             )}

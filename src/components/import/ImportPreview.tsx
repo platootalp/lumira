@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { CHANNEL_OPTIONS } from "@/types/import";
 import type { ImportPreviewItem } from "@/types/import";
 import { AlertCircle, Check, Trash2 } from "lucide-react";
@@ -28,10 +29,10 @@ export function ImportPreview({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div className="text-sm text-slate-600">
-          <span className="font-medium">{validItems.length}</span> 条有效
+        <div className="text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">{validItems.length}</span> 条有效
           {invalidItems.length > 0 && (
-            <span className="text-red-500 ml-2">
+            <span className="text-destructive ml-2">
               ({invalidItems.length} 条有误)
             </span>
           )}
@@ -51,58 +52,57 @@ export function ImportPreview({
         </Button>
       </div>
 
-      <div className="border rounded-lg overflow-hidden">
+      <div className="border border-input rounded-lg overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50">
+          <thead className="bg-muted">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-slate-700">
+              <th className="px-3 py-2 text-left font-medium text-foreground">
                 基金
               </th>
-              <th className="px-3 py-2 text-left font-medium text-slate-700 w-24">
+              <th className="px-3 py-2 text-left font-medium text-foreground w-24">
                 份额
               </th>
-              <th className="px-3 py-2 text-left font-medium text-slate-700 w-24">
+              <th className="px-3 py-2 text-left font-medium text-foreground w-24">
                 成本
               </th>
-              <th className="px-3 py-2 text-left font-medium text-slate-700 w-32">
+              <th className="px-3 py-2 text-left font-medium text-foreground w-32">
                 渠道
               </th>
-              <th className="px-3 py-2 text-center font-medium text-slate-700 w-10">
+              <th className="px-3 py-2 text-center font-medium text-foreground w-10">
                 操作
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-border">
             {items.map((item) => (
               <tr
                 key={item.id}
                 className={cn(
-                  "hover:bg-slate-50",
-                  !item.valid && "bg-red-50"
+                  "hover:bg-muted",
+                  !item.valid && "bg-destructive/10"
                 )}
               >
                 <td className="px-3 py-2">
                   <div className="space-y-1">
-                    <input
+                    <Input
                       type="text"
                       value={item.fundName}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         onUpdate(item.id, { fundName: e.target.value })
                       }
-                      className="w-full h-7 text-sm px-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="基金名称"
                     />
-                    <input
+                    <Input
                       type="text"
                       value={item.fundId}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         onUpdate(item.id, { fundId: e.target.value })
                       }
-                      className="w-24 h-7 text-sm px-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="代码"
+                      className="w-24"
                     />
                     {!item.valid && item.errors.length > 0 && (
-                      <div className="flex items-center gap-1 text-xs text-red-600">
+                      <div className="flex items-center gap-1 text-xs text-destructive">
                         <AlertCircle className="w-3 h-3" />
                         {item.errors.join(", ")}
                       </div>
@@ -110,7 +110,7 @@ export function ImportPreview({
                   </div>
                 </td>
                 <td className="px-3 py-2">
-                  <input
+                  <Input
                     type="number"
                     value={item.totalShares || ""}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -118,13 +118,12 @@ export function ImportPreview({
                         totalShares: parseFloat(e.target.value) || 0,
                       })
                     }
-                    className="w-full h-7 text-sm px-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     step="0.01"
                     min="0"
                   />
                 </td>
                 <td className="px-3 py-2">
-                  <input
+                  <Input
                     type="number"
                     value={item.avgCost || ""}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -132,7 +131,6 @@ export function ImportPreview({
                         avgCost: parseFloat(e.target.value) || 0,
                       })
                     }
-                    className="w-full h-7 text-sm px-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     step="0.0001"
                     min="0"
                   />
@@ -143,7 +141,7 @@ export function ImportPreview({
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                       onUpdate(item.id, { channel: e.target.value })
                     }
-                    className="w-full h-7 text-sm px-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full h-7 text-sm px-2 bg-background border border-input rounded focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
                   >
                     {CHANNEL_OPTIONS.map((opt) => (
                       <option key={opt.value} value={opt.value}>
@@ -155,7 +153,7 @@ export function ImportPreview({
                 <td className="px-3 py-2 text-center">
                   <button
                     onClick={() => onRemove(item.id)}
-                    className="p-1 hover:bg-red-100 rounded text-red-500 transition-colors"
+                    className="p-1 hover:bg-destructive/20 rounded text-destructive transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
