@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { transactionDb, holdingDb } from "@/lib/db";
+import { useCreateHolding, useUpdateHolding } from "@/hooks/use-holdings";
+import { useCreateTransaction, useTransactionsByHolding } from "@/hooks/use-transactions";
 import { cn } from "@/lib/utils";
 import { Loader2, Plus, Minus } from "lucide-react";
 import type { TransactionType } from "@/types";
@@ -11,8 +12,10 @@ import type { TransactionType } from "@/types";
 interface TransactionFormProps {
   fundId: string;
   fundName: string;
+  holdingId?: string | undefined;
   onSuccess?: () => void;
   onCancel?: () => void;
+  onHoldingCreated?: (holdingId: string) => void;
 }
 
 /**
@@ -23,8 +26,10 @@ interface TransactionFormProps {
 export function TransactionForm({
   fundId,
   fundName,
+  holdingId: existingHoldingId,
   onSuccess,
-  onCancel
+  onCancel,
+  onHoldingCreated
 }: TransactionFormProps) {
   const [type, setType] = useState<TransactionType>("BUY");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
@@ -32,29 +37,35 @@ export function TransactionForm({
   const [price, setPrice] = useState("");
   const [fee, setFee] = useState("");
   const [notes, setNotes] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const amount = shares && price ? parseFloat(shares) * parseFloat(price) : 0;
+
+  // React Query mutations
+  const createHolding = useCreateHolding();
+  const updateHolding = useUpdateHolding();
+  const createTransaction = useCreateTransaction();
+  const { data: existingTransactions = [] } = useTransactionsByHolding(existingHoldingId || "");
+
+  const isSubmitting = createHolding.isPending || createTransaction.isPending || updateHolding.isPending;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!shares || !price) return;
 
-    setIsSubmitting(true);
     try {
-      // 获取持仓
-      const holdings = await holdingDb.getByFundId(fundId);
-      let holdingId = holdings[0]?.id;
+      let holdingId = existingHoldingId;
 
       // 如果没有持仓，创建新持仓
       if (!holdingId && type === "BUY") {
-        holdingId = await holdingDb.create({
+        const newHolding = await createHolding.mutateAsync({
           fundId,
           fundName,
           totalShares: 0,
           avgCost: 0,
           totalCost: 0
         });
+        holdingId = newHolding.id;
+        onHoldingCreated?.(holdingId);
       }
 
       if (!holdingId) {
@@ -62,7 +73,7 @@ export function TransactionForm({
       }
 
       // 创建交易记录
-      await transactionDb.create({
+      await createTransaction.mutateAsync({
         holdingId,
         fundId,
         fundName,
@@ -75,30 +86,48 @@ export function TransactionForm({
         notes
       });
 
-      // 更新持仓信息
-      const allTransactions = await transactionDb.getByHoldingId(holdingId);
-      const totalShares = allTransactions.reduce((sum, tx) => {
+      // 计算新的持仓信息
+      const allTransactions = [...existingTransactions];
+      if (type === "BUY") {
+        allTransactions.push({
+          id: "temp",
+          holdingId,
+          fundId,
+          type,
+          date,
+          shares: parseFloat(shares),
+          price: parseFloat(price),
+          amount,
+          fee: fee ? parseFloat(fee) : 0,
+          notes,
+          createdAt: new Date()
+        } as any);
+      }
+
+      const totalShares = allTransactions.reduce((sum: number, tx: any) => {
         return tx.type === "BUY" ? sum + tx.shares : sum - tx.shares;
       }, 0);
 
       const totalCost = allTransactions
-        .filter(tx => tx.type === "BUY")
-        .reduce((sum, tx) => sum + tx.amount, 0);
+        .filter((tx: any) => tx.type === "BUY")
+        .reduce((sum: number, tx: any) => sum + tx.amount, 0);
 
       const avgCost = totalShares > 0 ? totalCost / totalShares : 0;
 
-      await holdingDb.update(holdingId, {
-        totalShares,
-        avgCost,
-        totalCost
+      // 更新持仓
+      await updateHolding.mutateAsync({
+        id: holdingId,
+        changes: {
+          totalShares,
+          avgCost,
+          totalCost
+        }
       });
 
       onSuccess?.();
     } catch (error) {
       console.error("添加交易失败:", error);
       alert("添加交易失败: " + (error as Error).message);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

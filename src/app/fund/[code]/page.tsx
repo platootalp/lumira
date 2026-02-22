@@ -1,18 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { holdingDb, transactionDb } from "@/lib/db";
+import { useHoldings } from "@/hooks/use-holdings";
+import { useTransactionsByHolding } from "@/hooks/use-transactions";
 import { getFundEstimate, fetchNavHistory } from "@/services/fund";
 import { formatNumber, cn } from "@/lib/utils";
 import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Plus } from "lucide-react";
 import { TransactionForm } from "@/components/transaction-form";
 import { NavHistoryChart } from "@/components/charts/NavHistoryChart";
 
-import type { Holding, Transaction, FundEstimate } from "@/types";
+import type { FundEstimate } from "@/types";
 
 /**
  * 基金详情页
@@ -24,27 +25,32 @@ export default function FundDetailPage() {
   const router = useRouter();
   const fundCode = params.code as string;
   
-  const [holding, setHolding] = useState<Holding | null>(null);
   const [estimate, setEstimate] = useState<FundEstimate | null>(null);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [navHistory, setNavHistory] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingEstimate, setIsLoadingEstimate] = useState(true);
   const [showTransactionForm, setShowTransactionForm] = useState(false);
 
-  // 加载数据
-  const loadData = async () => {
-    setIsLoading(true);
+  // 使用 React Query 获取持仓数据
+  const { data: holdings = [], isLoading: isLoadingHoldings } = useHoldings();
+
+  // 根据 fundCode 过滤持仓
+  const holding = useMemo(() => {
+    return holdings.find(h => h.fundId === fundCode) || null;
+  }, [holdings, fundCode]);
+
+  // 使用 React Query 获取交易记录
+  const { data: transactions = [], isLoading: isLoadingTransactions } = useTransactionsByHolding(holding?.id || "");
+
+  // 加载估值和净值历史数据（这些调用外部 API）
+  useEffect(() => {
+    if (fundCode) {
+      loadEstimateData();
+    }
+  }, [fundCode]);
+
+  const loadEstimateData = async () => {
+    setIsLoadingEstimate(true);
     try {
-      // 获取持仓
-      const holdings = await holdingDb.getByFundId(fundCode);
-      if (holdings.length > 0) {
-        setHolding(holdings[0]);
-
-        // 获取交易记录
-        const txs = await transactionDb.getByFundId(fundCode);
-        setTransactions(txs);
-      }
-
       // 获取估值
       const est = await getFundEstimate(fundCode);
       setEstimate(est);
@@ -53,17 +59,11 @@ export default function FundDetailPage() {
       const history = await fetchNavHistory(fundCode, 90);
       setNavHistory(history.history || []);
     } catch (error) {
-      console.error("加载基金详情失败:", error);
+      console.error("加载基金估值失败:", error);
     } finally {
-      setIsLoading(false);
+      setIsLoadingEstimate(false);
     }
   };
-
-  useEffect(() => {
-    if (fundCode) {
-      loadData();
-    }
-  }, [fundCode]);
 
   // 计算收益
   const calculateProfit = () => {
@@ -83,6 +83,8 @@ export default function FundDetailPage() {
 
   const profit = calculateProfit();
   const isProfit = profit ? profit.profit >= 0 : true;
+
+  const isLoading = isLoadingHoldings || isLoadingEstimate;
 
   if (isLoading) {
     return (
@@ -250,7 +252,11 @@ export default function FundDetailPage() {
                 <CardTitle>交易记录</CardTitle>
               </CardHeader>
               <CardContent>
-                {transactions.length > 0 ? (
+                {isLoadingTransactions ? (
+                  <div className="text-center py-12 text-gray-500">
+                    <p>加载中...</p>
+                  </div>
+                ) : transactions.length > 0 ? (
                   <div className="space-y-3">
                     {transactions.map(tx => (
                       <div
@@ -368,8 +374,8 @@ export default function FundDetailPage() {
           <TransactionForm
             fundId={fundCode}
             fundName={estimate.fundName}
+            holdingId={holding?.id}
             onSuccess={() => {
-              loadData();
               setShowTransactionForm(false);
             }}
             onCancel={() => setShowTransactionForm(false)}
