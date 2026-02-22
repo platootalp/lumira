@@ -1,7 +1,6 @@
 import { prisma } from '../config/database';
 import { redis, CACHE_TTL } from '../config/redis';
 import { eastmoneyService } from './external/eastmoney.service';
-import { logger } from '../utils/logger';
 
 export interface PortfolioSummary {
   totalAssets: number;

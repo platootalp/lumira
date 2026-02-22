@@ -6,18 +6,18 @@ export interface CreateHoldingInput {
   totalShares: number;
   avgCost: number;
   totalCost: number;
-  channel?: string;
-  group?: string;
-  tags?: string[];
+  channel?: string | undefined;
+  group?: string | undefined;
+  tags?: string[] | undefined;
 }
 
 export interface UpdateHoldingInput {
-  totalShares?: number;
-  avgCost?: number;
-  totalCost?: number;
-  channel?: string;
-  group?: string;
-  tags?: string[];
+  totalShares?: number | undefined;
+  avgCost?: number | undefined;
+  totalCost?: number | undefined;
+  channel?: string | undefined;
+  group?: string | undefined;
+  tags?: string[] | undefined;
 }
 
 export interface HoldingWithFund {
@@ -133,8 +133,8 @@ export class HoldingService {
         totalShares: data.totalShares,
         avgCost: data.avgCost,
         totalCost: data.totalCost,
-        channel: data.channel,
-        group: data.group,
+        channel: data.channel ?? null,
+        group: data.group ?? null,
         tags: data.tags || [],
       },
       include: {
@@ -174,10 +174,14 @@ export class HoldingService {
       throw new Error('Holding not found');
     }
 
+    const updateData = Object.fromEntries(
+      Object.entries(data).filter(([, v]) => v !== undefined)
+    );
+    
     const updated = await prisma.holding.update({
       where: { id: holdingId },
       data: {
-        ...data,
+        ...updateData,
         version: { increment: 1 },
       },
       include: {

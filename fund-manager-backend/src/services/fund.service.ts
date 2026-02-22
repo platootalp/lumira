@@ -1,7 +1,7 @@
 import { prisma } from '../config/database';
 import { redis, CACHE_TTL } from '../config/redis';
 import { logger } from '../utils/logger';
-import { eastmoneyService, FundDetail } from './external/eastmoney.service';
+import { eastmoneyService } from './external/eastmoney.service';
 import { Decimal } from '@prisma/client/runtime/library';
 
 export interface FundWithHistory {
@@ -10,22 +10,25 @@ export interface FundWithHistory {
   type: string;
   riskLevel: string;
   company: string;
-  managerName?: string;
+  managerName?: string | null;
   nav: Decimal;
   accumNav: Decimal;
   navDate: string;
   feeRateBuy: Decimal;
   feeRateSell: Decimal;
   feeRateMgmt: Decimal;
-  feeRateCustody?: Decimal;
-  scale?: Decimal;
-  establishDate?: string;
-  history?: Array<{
+  feeRateCustody?: Decimal | null;
+  scale?: Decimal | null;
+  establishDate?: string | null;
+  navHistory?: Array<{
+    id: string;
+    fundId: string;
     date: string;
     nav: Decimal;
     accumNav: Decimal;
-    change?: Decimal;
-    changePercent?: Decimal;
+    change: Decimal | null;
+    changePercent: Decimal | null;
+    createdAt: Date;
   }>;
 }
 
@@ -81,40 +84,29 @@ export class FundService {
       return null;
     }
 
-    const fund = await prisma.fund.upsert({
+    const fundData = {
+      name: detail.name,
+      type: this.mapFundType(detail.type),
+      riskLevel: this.mapRiskLevel(detail.riskLevel),
+      company: detail.company,
+      managerName: detail.managerName ?? null,
+      nav: detail.nav,
+      accumNav: detail.accumNav,
+      navDate: detail.navDate,
+      feeRateBuy: detail.feeRateBuy,
+      feeRateSell: detail.feeRateSell,
+      feeRateMgmt: detail.feeRateMgmt,
+      feeRateCustody: detail.feeRateCustody ?? null,
+      scale: detail.scale ?? null,
+      establishDate: detail.establishDate ?? null,
+    };
+
+    await prisma.fund.upsert({
       where: { id: fundId },
-      update: {
-        name: detail.name,
-        type: this.mapFundType(detail.type),
-        riskLevel: this.mapRiskLevel(detail.riskLevel),
-        company: detail.company,
-        managerName: detail.managerName,
-        nav: detail.nav,
-        accumNav: detail.accumNav,
-        navDate: detail.navDate,
-        feeRateBuy: detail.feeRateBuy,
-        feeRateSell: detail.feeRateSell,
-        feeRateMgmt: detail.feeRateMgmt,
-        feeRateCustody: detail.feeRateCustody,
-        scale: detail.scale,
-        establishDate: detail.establishDate,
-      },
+      update: fundData,
       create: {
         id: fundId,
-        name: detail.name,
-        type: this.mapFundType(detail.type),
-        riskLevel: this.mapRiskLevel(detail.riskLevel),
-        company: detail.company,
-        managerName: detail.managerName,
-        nav: detail.nav,
-        accumNav: detail.accumNav,
-        navDate: detail.navDate,
-        feeRateBuy: detail.feeRateBuy,
-        feeRateSell: detail.feeRateSell,
-        feeRateMgmt: detail.feeRateMgmt,
-        feeRateCustody: detail.feeRateCustody,
-        scale: detail.scale,
-        establishDate: detail.establishDate,
+        ...fundData,
       },
     });
 

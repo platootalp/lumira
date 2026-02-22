@@ -7,7 +7,7 @@ export const rateLimitMiddleware = rateLimit({
   max: parseInt(env.RATE_LIMIT_MAX_REQUESTS),
   standardHeaders: true,
   legacyHeaders: false,
-  handler: (req, res) => {
+  handler: (_req, res) => {
     res.status(429).json(
       errorResponse('RATE_LIMIT_EXCEEDED', 'Too many requests, please try again later')
     );

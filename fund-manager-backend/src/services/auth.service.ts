@@ -34,7 +34,7 @@ export class AuthService {
       data: {
         email,
         password: hashedPassword,
-        name,
+        name: name ?? null,
         settings: {
           create: {},
         },
@@ -77,16 +77,19 @@ export class AuthService {
   }
 
   async generateTokens(userId: string): Promise<AuthTokens> {
+    const accessExpiresIn = env.JWT_ACCESS_EXPIRATION || '15m';
+    const refreshExpiresIn = env.JWT_REFRESH_EXPIRATION || '7d';
+    
     const accessToken = jwt.sign(
       { userId },
       env.JWT_SECRET,
-      { expiresIn: env.JWT_ACCESS_EXPIRATION }
+      { expiresIn: accessExpiresIn } as jwt.SignOptions
     );
 
     const refreshToken = jwt.sign(
       { userId, type: 'refresh' },
       env.JWT_SECRET,
-      { expiresIn: env.JWT_REFRESH_EXPIRATION }
+      { expiresIn: refreshExpiresIn } as jwt.SignOptions
     );
 
     const expiresAt = new Date();

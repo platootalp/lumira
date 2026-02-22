@@ -1,0 +1,12 @@
+
+> fund-manager-backend@1.0.0 dev
+> tsx watch src/app.ts
+
+[32minfo[39m: Server running on port 3001 in development mode {"service":"fund-manager-api","timestamp":"2026-02-22T08:14:00.586Z"}
+Redis connected successfully
+[32minfo[39m: ::1 - - [22/Feb/2026:08:14:00 +0000] "GET /health HTTP/1.1" 200 54 "-" "curl/8.7.1" {"service":"fund-manager-api","timestamp":"2026-02-22T08:14:00.950Z"}
+[32minfo[39m: ::1 - - [22/Feb/2026:08:15:08 +0000] "GET /api/holdings HTTP/1.1" 401 134 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" {"service":"fund-manager-api","timestamp":"2026-02-22T08:15:08.133Z"}
+[32minfo[39m: ::1 - - [22/Feb/2026:08:15:08 +0000] "GET /api/auth/me HTTP/1.1" 401 134 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" {"service":"fund-manager-api","timestamp":"2026-02-22T08:15:08.154Z"}
+[32minfo[39m: ::1 - - [22/Feb/2026:08:15:09 +0000] "GET /api/holdings HTTP/1.1" 401 134 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" {"service":"fund-manager-api","timestamp":"2026-02-22T08:15:09.180Z"}
+[32minfo[39m: ::1 - - [22/Feb/2026:08:15:11 +0000] "GET /api/holdings HTTP/1.1" 401 134 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" {"service":"fund-manager-api","timestamp":"2026-02-22T08:15:11.164Z"}
+[32minfo[39m: ::1 - - [22/Feb/2026:08:15:12 +0000] "GET /api/holdings HTTP/1.1" 401 134 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" {"service":"fund-manager-api","timestamp":"2026-02-22T08:15:12.172Z"}

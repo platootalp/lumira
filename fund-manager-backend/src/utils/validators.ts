@@ -15,6 +15,7 @@ export const createHoldingSchema = z.object({
   fundId: z.string().length(6, 'Fund ID must be 6 characters'),
   totalShares: z.number().positive('Shares must be positive'),
   avgCost: z.number().positive('Average cost must be positive'),
+  totalCost: z.number().positive('Total cost must be positive'),
   channel: z.string().optional(),
   group: z.string().optional(),
   tags: z.array(z.string()).optional(),
@@ -54,7 +55,7 @@ export const timeRangeSchema = z.enum(['1m', '3m', '6m', '1y', 'ytd', 'all']);
 
 export const fundSearchSchema = z.object({
   query: z.string().min(1),
-  limit: z.number().int().min(1).max(50).optional(),
+  limit: z.coerce.number().int().min(1).max(50).optional(),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

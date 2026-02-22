@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
-import type { EChartsOption } from "echarts";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -99,7 +98,7 @@ export function NavHistoryChart({
     return { dates, navs, changes };
   }, [filteredData, estimateNav, estimateTime]);
 
-  const option: EChartsOption = useMemo(() => {
+  const option = useMemo(() => {
     const isPositive =
       chartData.navs.length > 1
         ? chartData.navs[chartData.navs.length - 1] >= chartData.navs[0]
@@ -208,7 +207,7 @@ export function NavHistoryChart({
           data: chartData.navs,
           smooth: true,
           symbol: "circle",
-          symbolSize: (value: number, params: any) => {
+          symbolSize: (_value: number, params: any) => {
             // Highlight estimate point
             const isEstimate =
               estimateTime?.startsWith(chartData.dates[params.dataIndex]) &&

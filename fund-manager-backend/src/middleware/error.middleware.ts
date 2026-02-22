@@ -5,15 +5,15 @@ import { logger } from '../utils/logger';
 
 export function errorMiddleware(
   error: Error,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) {
   logger.error('Error occurred:', {
     error: error.message,
     stack: error.stack,
-    path: req.path,
-    method: req.method,
+    path: _req.path,
+    method: _req.method,
   });
 
   if (error instanceof ZodError) {

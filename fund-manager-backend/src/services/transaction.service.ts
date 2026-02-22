@@ -11,16 +11,16 @@ export interface CreateTransactionInput {
   price: number;
   amount: number;
   fee: number;
-  notes?: string;
+  notes?: string | undefined;
 }
 
 export interface UpdateTransactionInput {
-  date?: string;
-  shares?: number;
-  price?: number;
-  amount?: number;
-  fee?: number;
-  notes?: string;
+  date?: string | undefined;
+  shares?: number | undefined;
+  price?: number | undefined;
+  amount?: number | undefined;
+  fee?: number | undefined;
+  notes?: string | undefined;
 }
 
 export interface TransactionWithFund {
@@ -58,12 +58,12 @@ export class TransactionService {
   async getUserTransactions(
     userId: string,
     options?: {
-      fundId?: string;
-      type?: 'BUY' | 'SELL' | 'DIVIDEND';
-      startDate?: string;
-      endDate?: string;
-      limit?: number;
-      offset?: number;
+      fundId?: string | undefined;
+      type?: 'BUY' | 'SELL' | 'DIVIDEND' | undefined;
+      startDate?: string | undefined;
+      endDate?: string | undefined;
+      limit?: number | undefined;
+      offset?: number | undefined;
     }
   ): Promise<{ transactions: TransactionWithFund[]; total: number }> {
     const where: any = { userId };
@@ -130,7 +130,7 @@ export class TransactionService {
           price: data.price,
           amount: data.amount,
           fee: data.fee,
-          notes: data.notes,
+          notes: data.notes ?? null,
         },
       });
 
@@ -168,9 +168,13 @@ export class TransactionService {
       throw new Error('Transaction not found');
     }
 
+    const updateData = Object.fromEntries(
+      Object.entries(data).filter(([, v]) => v !== undefined)
+    );
+
     const updated = await prisma.transaction.update({
       where: { id: transactionId },
-      data,
+      data: updateData,
     });
 
     logger.info(`Transaction updated: ${transactionId}`);

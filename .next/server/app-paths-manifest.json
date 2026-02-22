@@ -1,3 +1,10 @@
 {
-  "/page": "app/page.js"
+  "/not-found": "app/not-found.js",
+  "/page": "app/page.js",
+  "/holdings/page": "app/holdings/page.js",
+  "/analysis/page": "app/analysis/page.js",
+  "/sip/page": "app/sip/page.js",
+  "/rankings/page": "app/rankings/page.js",
+  "/compare/page": "app/compare/page.js",
+  "/import/page": "app/import/page.js"
 }
