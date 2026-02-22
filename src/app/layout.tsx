@@ -4,6 +4,7 @@ import { ErrorBoundary } from "@/components/error-boundary";
 import { Sidebar, MobileSidebar } from "@/components/layout/Sidebar";
 import { ToastProvider } from "@/components/ui/toast";
 import { QueryClientProvider } from "@/components/query-client-provider";
+import { AuthProvider } from "@/components/auth/auth-provider";
 
 export const metadata: Metadata = {
   title: "Lumira - 基金投资助手",
@@ -19,19 +20,21 @@ export default function RootLayout({
     <html lang="zh-CN">
       <body className="min-h-screen bg-gray-50">
         <QueryClientProvider>
-          <ToastProvider>
-            <ErrorBoundary>
-              <div className="flex h-screen">
-                <div className="hidden lg:block">
-                  <Sidebar />
+          <AuthProvider>
+            <ToastProvider>
+              <ErrorBoundary>
+                <div className="flex h-screen">
+                  <div className="hidden lg:block">
+                    <Sidebar />
+                  </div>
+                  <MobileSidebar />
+                  <main className="flex-1 lg:ml-60 overflow-auto">
+                    {children}
+                  </main>
                 </div>
-                <MobileSidebar />
-                <main className="flex-1 lg:ml-60 overflow-auto">
-                  {children}
-                </main>
-              </div>
-            </ErrorBoundary>
-          </ToastProvider>
+              </ErrorBoundary>
+            </ToastProvider>
+          </AuthProvider>
         </QueryClientProvider>
       </body>
     </html>
