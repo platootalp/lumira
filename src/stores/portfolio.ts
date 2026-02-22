@@ -1,106 +1,61 @@
 /**
  * 投资组合状态管理 (Zustand)
- * 
+ *
  * Skills: portfolio-analysis
+ *
+ * NOTE: This store now only manages UI state.
+ * Data fetching is handled by React Query (useHoldings hook).
  */
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Holding, PortfolioAnalysis } from '@/types';
-import { holdingDb } from '@/lib/db';
+import type { PortfolioAnalysis } from '@/types';
 
 interface PortfolioState {
-  // 状态
-  holdings: Holding[];
+  // UI State
   isLoading: boolean;
   error: Error | null;
   lastUpdated: Date | null;
-  
-  // 分析结果
+
+  // Analysis (persisted)
   analysis: PortfolioAnalysis | null;
-  
-  // 操作方法
-  fetchHoldings: () => Promise<void>;
-  addHolding: (holding: Omit<Holding, 'id' | 'createdAt' | 'updatedAt' | 'version'>) => Promise<string>;
-  removeHolding: (id: string) => Promise<void>;
-  updateHolding: (id: string, changes: Partial<Holding>) => Promise<void>;
-  refresh: () => Promise<void>;
-  
-  // 分析
+
+  // Actions
+  setLoading: (isLoading: boolean) => void;
+  setError: (error: Error | null) => void;
+  setLastUpdated: (date: Date) => void;
   setAnalysis: (analysis: PortfolioAnalysis) => void;
   clearAnalysis: () => void;
 }
 
 export const usePortfolioStore = create<PortfolioState>()(
   persist(
-    (set, get) => ({
-      // 初始状态
-      holdings: [],
+    (set) => ({
+      // Initial state
       isLoading: false,
       error: null,
       lastUpdated: null,
       analysis: null,
-      
-      // 获取持仓列表
-      fetchHoldings: async () => {
-        set({ isLoading: true, error: null });
-        try {
-          const holdings = await holdingDb.getAll();
-          set({ 
-            holdings, 
-            isLoading: false, 
-            lastUpdated: new Date() 
-          });
-        } catch (error) {
-          set({ 
-            error: error as Error, 
-            isLoading: false 
-          });
-        }
-      },
-      
-      // 添加持仓
-      addHolding: async (holding) => {
-        const id = await holdingDb.create(holding);
-        await get().fetchHoldings();
-        return id;
-      },
-      
-      // 删除持仓
-      removeHolding: async (id) => {
-        await holdingDb.delete(id);
-        await get().fetchHoldings();
-      },
-      
-      // 更新持仓
-      updateHolding: async (id, changes) => {
-        await holdingDb.update(id, changes);
-        await get().fetchHoldings();
-      },
-      
-      // 刷新
-      refresh: async () => {
-        await get().fetchHoldings();
-      },
-      
-      // 设置分析结果
+
+      // Actions
+      setLoading: (isLoading) => set({ isLoading }),
+      setError: (error) => set({ error }),
+      setLastUpdated: (date) => set({ lastUpdated: date }),
       setAnalysis: (analysis) => set({ analysis }),
-      
-      // 清除分析
-      clearAnalysis: () => set({ analysis: null })
+      clearAnalysis: () => set({ analysis: null }),
     }),
     {
       name: 'portfolio-storage',
       partialize: (state) => ({
-        // 只持久化以下字段
-        analysis: state.analysis
-      })
+        // Only persist analysis
+        analysis: state.analysis,
+      }),
     }
   )
 );
 
-// 选择器
-export const selectTotalAssets = (state: PortfolioState) => 
+// Selectors
+export const selectTotalAssets = (state: PortfolioState) =>
   state.analysis?.summary.totalAssets ?? 0;
 
 export const selectTotalProfit = (state: PortfolioState) =>
@@ -108,6 +63,3 @@ export const selectTotalProfit = (state: PortfolioState) =>
 
 export const selectTodayProfit = (state: PortfolioState) =>
   state.analysis?.summary.todayProfit ?? 0;
-
-export const selectHoldingCount = (state: PortfolioState) =>
-  state.holdings.length;

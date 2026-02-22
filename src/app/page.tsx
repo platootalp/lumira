@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PortfolioChart } from "@/components/portfolio-chart";
-import { usePortfolioStore } from "@/stores/portfolio";
+import { useHoldings } from "@/hooks/use-holdings";
 import { getBatchEstimates, calculateEstimateProfit, getFundYesterdayNav } from "@/services/fund";
 import { formatNumber, cn } from "@/lib/utils";
 import { 
@@ -20,7 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { FundEstimate, HoldingWithEstimate } from "@/types";
 
 export default function HomePage() {
-  const { holdings, error, fetchHoldings } = usePortfolioStore();
+  const { data: holdings = [], error } = useHoldings();
   const [mounted, setMounted] = useState(false);
   const [estimates, setEstimates] = useState<Map<string, FundEstimate>>(new Map());
   const [yesterdayNavs, setYesterdayNavs] = useState<Map<string, number | null>>(new Map());
@@ -59,7 +59,7 @@ export default function HomePage() {
   const isProfit = summary.totalProfit >= 0;
   const isTodayProfit = summary.todayProfit >= 0;
 
-  useEffect(() => { setMounted(true); fetchHoldings(); }, [fetchHoldings]);
+  useEffect(() => { setMounted(true); }, []);
 
   const loadEstimates = useCallback(async () => {
     if (holdings.length === 0) return;

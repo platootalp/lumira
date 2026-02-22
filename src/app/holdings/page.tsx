@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FundCard } from "@/components/fund-card";
-import { usePortfolioStore } from "@/stores/portfolio";
+import { useHoldings } from "@/hooks/use-holdings";
 import { getBatchEstimates, calculateEstimateProfit } from "@/services/fund";
 import { formatNumber } from "@/lib/utils";
 import { 
@@ -20,7 +20,7 @@ import type { FundEstimate, HoldingWithEstimate } from "@/types";
 type SortOption = "marketValue" | "profitRate" | "todayProfit" | "fundName";
 
 export default function HoldingsPage() {
-  const { holdings, isLoading, error, fetchHoldings } = usePortfolioStore();
+  const { data: holdings = [], isLoading, error } = useHoldings();
   const [mounted, setMounted] = useState(false);
   const [estimates, setEstimates] = useState<Map<string, FundEstimate>>(new Map());
   const [searchQuery, setSearchQuery] = useState("");
@@ -73,8 +73,7 @@ export default function HoldingsPage() {
 
   useEffect(() => { 
     setMounted(true); 
-    fetchHoldings(); 
-  }, [fetchHoldings]);
+  }, []);
 
   const loadEstimates = useCallback(async () => {
     if (holdings.length === 0) return;
