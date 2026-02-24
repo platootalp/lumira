@@ -1,11 +1,16 @@
-# AGENTS.md - Lumira 基金投资助手开发指南
+# AGENTS.md - Lumira 基金投资助手
 
-## 项目概述
+**架构**: Next.js 14 (前端) + Express 4 (后端) + Prisma/PostgreSQL
 
-Lumira 是一个面向散户投资者的基金持仓管理应用，采用前后端分离架构：
-- **前端**: Next.js 14 + React 18 + TypeScript
-- **后端**: Express 4 + Prisma + PostgreSQL
+## 子项目文档
 
+| 目录 | 说明 |
+|------|------|
+| [`src/components/ui/`](src/components/ui/AGENTS.md) | UI 组件 (Radix + Tailwind) |
+| [`src/lib/`](src/lib/AGENTS.md) | 工具库、API 客户端、IndexedDB |
+| [`lumira-backend/`](lumira-backend/AGENTS.md) | Express API 服务端 |
+
+## 快速开始
 ## 构建与开发命令
 
 ### 前端开发 (Next.js)
@@ -35,7 +40,7 @@ npm run test:watch
 
 ```bash
 # 进入后端目录
-cd fund-manager-backend
+cd lumira-backend
 
 # 开发模式 (端口 3001)
 npm run dev
@@ -170,7 +175,7 @@ src/
 │   │   └── ImportPreview.tsx
 │   ├── layout/                   # 布局组件
 │   │   └── Sidebar.tsx
-│   ├── ui/                       # 基础 UI 组件
+│   ├── ui/                       # 基础 UI 组件 → [详见 AGENTS.md](src/components/ui/AGENTS.md)
 │   │   ├── button.tsx
 │   │   ├── card.tsx
 │   │   ├── tabs.tsx
@@ -195,7 +200,7 @@ src/
 │   ├── use-portfolio.ts
 │   └── use-transactions.ts
 │
-├── lib/                          # 工具库
+├── lib/                          # 工具库 → [详见 AGENTS.md](src/lib/AGENTS.md)
 │   ├── api.ts                    # API 客户端
 │   ├── api-client.ts
 │   ├── calculate.ts              # 收益计算 (XIRR/夏普/回撤)
@@ -216,10 +221,10 @@ src/
     └── import.ts
 ```
 
-### 后端 (`fund-manager-backend/src/`)
+### 后端 (`lumira-backend/src/`) → [详见 AGENTS.md](lumira-backend/AGENTS.md)
 
 ```
-fund-manager-backend/src/
+lumira-backend/src/
 ├── app.ts                        # Express 应用入口
 │
 ├── config/                       # 配置
@@ -282,7 +287,7 @@ fund-manager-backend/src/
 | `NEXT_PUBLIC_GA_ID` | - | Google Analytics ID (可选) |
 | `NEXT_PUBLIC_SENTRY_DSN` | - | Sentry DSN (可选) |
 
-### 后端 (`fund-manager-backend/.env`)
+### 后端 (`lumira-backend/.env`)
 
 | 变量名 | 默认值 | 说明 |
 |--------|--------|------|

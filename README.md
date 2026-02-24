@@ -75,10 +75,10 @@ src/
 └── types/                        # TypeScript 类型
 ```
 
-### 后端 (`fund-manager-backend/src/`)
+### 后端 (`lumira-backend/src/`)
 
 ```
-fund-manager-backend/src/
+lumira-backend/src/
 ├── app.ts                        # Express 应用入口
 ├── config/                       # 配置
 ├── controllers/                  # 请求处理器
@@ -121,7 +121,7 @@ npm test
 
 ```bash
 # 进入后端目录
-cd fund-manager-backend
+cd lumira-backend
 
 # 安装依赖
 npm install
@@ -222,7 +222,7 @@ NEXT_PUBLIC_ESTIMATE_CACHE_TTL=30
 NEXT_PUBLIC_SEARCH_CACHE_TTL=300
 ```
 
-### 后端 (`fund-manager-backend/.env`)
+### 后端 (`lumira-backend/.env`)
 
 ```bash
 PORT=3001
