@@ -5,6 +5,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { ToastProvider } from "@/components/ui/toast";
 import { QueryClientProvider } from "@/components/query-client-provider";
 import { AuthProvider } from "@/components/auth/auth-provider";
+import { AuthModalsContainer } from "@/components/auth/auth-modals-container";
 import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ export default function RootLayout({
               <ToastProvider>
                 <ErrorBoundary>
                   <AppLayout>{children}</AppLayout>
+                  <AuthModalsContainer />
                 </ErrorBoundary>
               </ToastProvider>
             </AuthProvider>

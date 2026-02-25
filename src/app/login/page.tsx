@@ -70,7 +70,19 @@ function LoginForm() {
         <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
             <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-sm text-destructive">
-              {error}
+              {error === '该邮箱尚未注册，请先注册' ? (
+                <span>
+                  该邮箱尚未注册，
+                  <Link
+                    href="/register"
+                    className="font-medium underline hover:text-destructive/80"
+                  >
+                    立即注册
+                  </Link>
+                </span>
+              ) : (
+                error
+              )}
             </div>
           )}
 

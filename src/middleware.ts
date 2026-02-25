@@ -32,7 +32,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 检查用户是否已登录（通过 access_token cookie）
+  // 不再在中间件层面进行登录检查
+  // 客户端会通过 API 调用时的 401 响应来显示登录弹窗
+  return NextResponse.next();
   const accessToken = request.cookies.get('access_token')?.value;
 
   if (!accessToken) {

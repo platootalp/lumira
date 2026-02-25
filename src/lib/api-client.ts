@@ -16,6 +16,15 @@ export class ApiError extends Error {
 export class ApiClient {
   private accessToken: string | null = null;
   private refreshToken: string | null = null;
+  private onUnauthorized?: () => void;
+
+  /**
+   * 设置 401 错误处理器
+   * 当 API 返回 401 未授权时调用
+   */
+  setUnauthorizedHandler(handler: () => void): void {
+    this.onUnauthorized = handler;
+  }
 
   setTokens(tokens: AuthTokens): void {
     this.accessToken = tokens.accessToken;
@@ -109,6 +118,12 @@ export class ApiClient {
       } catch {
         errorData = { error: { message: response.statusText, code: 'UNKNOWN_ERROR' } };
       }
+
+      // 如果是 401 未授权错误，触发登录弹窗
+      if (response.status === 401 && this.onUnauthorized) {
+        this.onUnauthorized();
+      }
+
       throw new ApiError(
         errorData.error?.message || `HTTP ${response.status}`,
         response.status,
