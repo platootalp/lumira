@@ -11,6 +11,9 @@ const AUTH_QUERY_KEY = ['auth', 'user'];
 export function useAuth() {
   const queryClient = useQueryClient();
 
+  // 检查是否有 token，没有则不自动获取用户（避免 401 触发登录弹窗）
+  const hasToken = typeof window !== 'undefined' && !!localStorage.getItem('accessToken');
+
   const {
     data: user,
     isLoading,
@@ -20,6 +23,7 @@ export function useAuth() {
     queryFn: authApi.getCurrentUser,
     retry: false,
     staleTime: 5 * 60 * 1000,
+    enabled: hasToken, // 只有在有 token 时才获取用户信息
   });
 
   const loginMutation = useMutation({
