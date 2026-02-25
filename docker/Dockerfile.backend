@@ -1,26 +1,16 @@
-FROM node:20-slim AS builder
-WORKDIR /app
-
-# slim image already has build tools, no need to install
-COPY package*.json ./
-RUN npm ci
-
-COPY prisma ./prisma/
-RUN npx prisma generate
-
-COPY . .
-RUN npm run build
-
 FROM node:20-slim
+
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci --omit=dev
+# Install OpenSSL (required by Prisma)
+RUN apt-get update -y && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+# Copy pre-built artifacts from host
+COPY lumira-backend/package*.json ./
+COPY lumira-backend/dist ./dist
+COPY lumira-backend/prisma ./prisma
+COPY lumira-backend/node_modules ./node_modules
 
 EXPOSE 3001
+
 CMD ["npm", "start"]
