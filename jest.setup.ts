@@ -1,3 +1,4 @@
+import 'whatwg-fetch';
 import '@testing-library/jest-dom';
 import { jest } from '@jest/globals';
 
@@ -45,4 +46,22 @@ class MockResizeObserver {
 Object.defineProperty(window, 'ResizeObserver', {
   writable: true,
   value: MockResizeObserver,
+});
+
+// MSW Setup
+import { server } from './src/test/server';
+
+// Establish API mocking before all tests
+beforeAll(() => {
+  server.listen({ onUnhandledRequest: 'error' });
+});
+
+// Reset any request handlers that we may add during the tests
+afterEach(() => {
+  server.resetHandlers();
+});
+
+// Clean up after the tests are finished
+afterAll(() => {
+  server.close();
 });

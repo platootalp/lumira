@@ -27,14 +27,14 @@ echo -e "${GREEN}========================================${NC}"
 echo ""
 
 # Step 1: Start infrastructure
-print_info "步骤 1/2: 启动基础设施 (PostgreSQL/Redis)..."
+print_info "步骤 1/3: 启动基础设施 (PostgreSQL/Redis)..."
 cd docker/local
 ./start.sh
 cd "$SCRIPT_DIR"
 echo ""
 
 # Step 2: Check if npm dependencies are installed
-print_info "步骤 2/2: 检查依赖..."
+print_info "步骤 2/3: 检查依赖..."
 
 if [ ! -d "node_modules" ]; then
     print_warning "前端依赖未安装，正在安装..."
@@ -49,28 +49,74 @@ fi
 print_success "依赖检查完成"
 echo ""
 
-# Summary
+# Step 3: Start applications
+print_info "步骤 3/3: 启动前后端服务..."
+echo ""
+
+# Check if services already running
+BACKEND_PID=""
+FRONTEND_PID=""
+
+if lsof -i :3001 | grep -q LISTEN; then
+    print_warning "后端端口 3001 已被占用，跳过启动"
+else
+    print_info "启动后端服务 (端口 3001)..."
+    cd lumira-backend
+    nohup npm run dev > ../backend.log 2>&1 &
+    BACKEND_PID=$!
+    cd "$SCRIPT_DIR"
+    echo $BACKEND_PID > .backend.pid
+    print_success "后端已启动 (PID: $BACKEND_PID)"
+fi
+
+if lsof -i :3000 | grep -q LISTEN; then
+    print_warning "前端端口 3000 已被占用，跳过启动"
+else
+    print_info "启动前端服务 (端口 3000)..."
+    nohup npm run dev > frontend.log 2>&1 &
+    FRONTEND_PID=$!
+    echo $FRONTEND_PID > .frontend.pid
+    print_success "前端已启动 (PID: $FRONTEND_PID)"
+fi
+
+echo ""
+print_success "所有服务启动完成！"
+echo ""
+
+# Wait for services to be ready
+print_info "等待服务就绪..."
+sleep 3
+
+# Check health
+if curl -s 'http://localhost:3001/api/funds/search?q=test' > /dev/null 2>&1; then
+    print_success "后端 API 响应正常"
+else
+    print_warning "后端 API 尚未就绪，可能需要更多时间"
+fi
+
+if curl -s http://localhost:3000 > /dev/null 2>&1; then
+    print_success "前端服务响应正常"
+else
+    print_warning "前端服务尚未就绪，可能需要更多时间"
+fi
+
+echo ""
 echo -e "${GREEN}========================================${NC}"
-echo -e "${GREEN}  基础设施已就绪！${NC}"
+echo -e "${GREEN}  Lumira 开发环境已就绪！${NC}"
 echo -e "${GREEN}========================================${NC}"
 echo ""
 echo "📋 服务状态:"
 echo "  PostgreSQL:  localhost:5432"
 echo "  Redis:       localhost:6379"
+echo "  后端 API:    http://localhost:3001"
+echo "  前端页面:    http://localhost:3000"
 echo ""
-echo "💻 现在请在其他终端启动应用:"
+echo "📝 日志文件:"
+echo "  后端日志:    tail -f backend.log"
+echo "  前端日志:    tail -f frontend.log"
 echo ""
-echo -e "${BLUE}终端 1 - 后端:${NC}"
-echo "  cd lumira-backend && npm run dev"
-echo ""
-echo -e "${BLUE}终端 2 - 前端:${NC}"
-echo "  npm run dev"
-echo ""
-echo "🌐 访问地址:"
-echo "  前端: http://localhost:3000"
-echo "  后端: http://localhost:3001"
-echo ""
-echo "🛑 停止基础设施: ./stop-dev.sh"
-echo "📜 查看日志: cd docker/local && docker-compose logs -f"
+echo "🛑 停止服务:"
+echo "  前后端:      ./stop-dev.sh"
+echo "  基础设施:    cd docker/local && ./stop.sh"
 echo ""
 echo -e "${GREEN}========================================${NC}"

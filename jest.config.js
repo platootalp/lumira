@@ -10,7 +10,11 @@ const customJestConfig = {
   testEnvironment: 'jest-environment-jsdom',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^dexie$': '<rootDir>/node_modules/dexie/dist/dexie.js',
   },
+  transformIgnorePatterns: [
+    '/node_modules/(?!(fake-indexeddb)/)',
+  ],
   testMatch: [
     '**/__tests__/**/*.test.ts',
     '**/__tests__/**/*.test.tsx',
@@ -20,6 +24,7 @@ const customJestConfig = {
   testPathIgnorePatterns: [
     '<rootDir>/lumira-backend/',
     '<rootDir>/node_modules/',
+    '<rootDir>/e2e/',
   ],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
