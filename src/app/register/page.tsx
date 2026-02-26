@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,12 +21,14 @@ export default function RegisterPage() {
 
   const { register, isRegisterPending, isAuthenticated } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
 
   useEffect(() => {
     if (isAuthenticated) {
-      router.push("/dashboard");
+      router.push(redirect);
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, redirect]);
 
   const validateForm = (): boolean => {
     if (!name.trim()) {
@@ -77,7 +79,7 @@ export default function RegisterPage() {
         email: email.trim(),
         password,
       });
-      router.push("/dashboard");
+      router.push(redirect);
     } catch (err) {
       setError(err instanceof Error ? err.message : "注册失败，请重试");
     }
