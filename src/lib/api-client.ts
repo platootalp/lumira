@@ -23,6 +23,7 @@ export class ApiClient {
 
   constructor() {
     if (typeof window !== 'undefined') {
+      this.loadTokens();
       this.startRefreshCheck();
     }
   }

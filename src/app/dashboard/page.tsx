@@ -19,7 +19,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { FundEstimate, HoldingWithEstimate } from "@/types";
 
-export default function DashboardPage() {
+import { ProtectedRoute } from "@/components/auth/protected-route";
+
+function DashboardContent() {
   const { data: holdings = [], error } = useHoldings();
   const [mounted, setMounted] = useState(false);
   const [estimates, setEstimates] = useState<Map<string, FundEstimate>>(new Map());
@@ -117,11 +119,11 @@ export default function DashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground flex items-center gap-1">
+              <div className="text-sm text-muted-foreground flex items-center gap-1">
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-muted text-muted-foreground text-xs font-medium">
                   {summary.holdingCount} 只基金
                 </span>
-              </p>
+              </div>
             </CardContent>
           </Card>
 
@@ -235,5 +237,13 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <ProtectedRoute>
+      <DashboardContent />
+    </ProtectedRoute>
   );
 }

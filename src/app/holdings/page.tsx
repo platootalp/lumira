@@ -18,15 +18,17 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import type { FundEstimate, HoldingWithEstimate } from "@/types";
 
+import { ProtectedRoute } from "@/components/auth/protected-route";
 type SortOption = "marketValue" | "profitRate" | "todayProfit" | "fundName";
 
-export default function HoldingsPage() {
+
+function HoldingsContent() {
   const { data: holdings = [], isLoading, error } = useHoldings();
-  const [mounted, setMounted] = useState(false);
-  const [estimates, setEstimates] = useState<Map<string, FundEstimate>>(new Map());
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("marketValue");
   const [sortDesc, setSortDesc] = useState(true);
+  const [mounted, setMounted] = useState(false);
+  const [estimates, setEstimates] = useState<Map<string, FundEstimate>>(new Map());
 
   const holdingsWithEstimates: HoldingWithEstimate[] = holdings.map(holding => {
     const estimate = estimates.get(holding.fundId);
@@ -201,5 +203,13 @@ export default function HoldingsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function HoldingsPage() {
+  return (
+    <ProtectedRoute>
+      <HoldingsContent />
+    </ProtectedRoute>
   );
 }

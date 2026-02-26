@@ -6,10 +6,21 @@
    - Local:        http://localhost:3000
    - Environments: .env.local
 
- ✓ Ready in 4.6s
- ○ Compiling /src/middleware ...
- ✓ Compiled /src/middleware in 1194ms (64 modules)
+ ✓ Ready in 2.6s
  ○ Compiling / ...
- ✓ Compiled /register in 17.2s (920 modules)
+ ✓ Compiled / in 3s (871 modules)
+ ✓ Compiled in 503ms (445 modules)
+ ○ Compiling /login ...
+ ✓ Compiled /login in 576ms (879 modules)
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 2.3s (2028 modules)
  ○ Compiling /not-found ...
- ✓ Compiled /not-found in 1083ms (911 modules)
+ ✓ Compiled /not-found in 574ms (2033 modules)
+ ✓ Compiled /holdings in 277ms (2055 modules)
+ ✓ Compiled /analysis in 373ms (2063 modules)
+ ○ Compiling /sip ...
+ ✓ Compiled /sip in 531ms (2077 modules)
+ ✓ Compiled /rankings in 396ms (2089 modules)
+ ✓ Compiled /compare in 224ms (2097 modules)
+ ○ Compiling /import ...
+ ✓ Compiled /import in 585ms (2204 modules)

@@ -8,6 +8,7 @@ import { SearchTab } from "@/components/import/SearchTab";
 import { ManualTab } from "@/components/import/ManualTab";
 import { ExcelTab } from "@/components/import/ExcelTab";
 import { OcrTab } from "@/components/import/OcrTab";
+import { ProtectedRoute } from "@/components/auth/protected-route";
 
 type ImportTab = "search" | "manual" | "excel" | "ocr";
 
@@ -24,7 +25,7 @@ const tabs: TabItem[] = [
   { key: "ocr", label: "截图识别", icon: Camera },
 ];
 
-export default function ImportPage() {
+function ImportContent() {
   const [activeTab, setActiveTab] = useState<ImportTab>("search");
 
   const handleSuccess = () => {
@@ -45,8 +46,8 @@ export default function ImportPage() {
         </div>
 
         <Card>
-          <CardHeader>
-            <div className="flex flex-wrap gap-2">
+          <CardHeader className="pb-0">
+            <div className="flex space-x-1 p-1 bg-muted rounded-xl">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (
@@ -54,10 +55,10 @@ export default function ImportPage() {
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
                     className={cn(
-                      "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                      "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
                       activeTab === tab.key
-                        ? "bg-blue-100 text-blue-700"
-                        : "text-muted-foreground hover:bg-muted"
+                        ? "bg-white text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground hover:bg-white/50"
                     )}
                   >
                     <Icon className="w-4 h-4" />
@@ -76,5 +77,13 @@ export default function ImportPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function ImportPage() {
+  return (
+    <ProtectedRoute>
+      <ImportContent />
+    </ProtectedRoute>
   );
 }
