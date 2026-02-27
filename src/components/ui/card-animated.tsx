@@ -1,12 +1,15 @@
 "use client";
 
-import { motion, type Transition, type TargetAndTransition } from "framer-motion";
+import { motion, type Transition, type TargetAndTransition, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { staggerItem, cardHover } from "@/lib/animations";
 
-interface AnimatedCardProps extends React.HTMLAttributes<HTMLDivElement> {
+interface AnimatedCardProps {
+  children: React.ReactNode;
+  className?: string;
   hover?: boolean;
   delay?: number;
+  onClick?: () => void;
 }
 
 export function AnimatedCard({
@@ -14,22 +17,37 @@ export function AnimatedCard({
   className,
   hover = true,
   delay,
-  ...props
+  onClick,
 }: AnimatedCardProps) {
-  return (
-    <motion.div
-      variants={staggerItem}
-      initial="initial"
-      animate="animate"
-      whileHover={hover ? (cardHover.hover as TargetAndTransition) : undefined}
-      transition={delay ? ({ delay: delay / 1000 } as Transition) : undefined}
-      className={cn(
-        "rounded-2xl border bg-card text-card-foreground shadow-sm",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </motion.div>
-  );
+  const motionProps: {
+    variants: Variants;
+    initial: string;
+    animate: string;
+    whileHover?: TargetAndTransition;
+    transition?: Transition;
+    className: string;
+    onClick?: () => void;
+  } = {
+    variants: staggerItem,
+    initial: "initial",
+    animate: "animate",
+    className: cn(
+      "rounded-2xl border bg-card text-card-foreground shadow-sm",
+      className
+    ),
+  };
+
+  if (hover) {
+    motionProps.whileHover = cardHover.hover as TargetAndTransition;
+  }
+
+  if (delay) {
+    motionProps.transition = { delay: delay / 1000 } as Transition;
+  }
+
+  if (onClick) {
+    motionProps.onClick = onClick;
+  }
+
+  return <motion.div {...motionProps}>{children}</motion.div>;
 }

@@ -3,7 +3,7 @@
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 import { cn } from "@/lib/utils"
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 
 const Tabs = TabsPrimitive.Root
 
@@ -28,6 +28,7 @@ const TabsTrigger = React.forwardRef<
 >(({ className, children, ...props }, ref) => {
   // Access data-state from props for animation
   const isActive = (props as { 'data-state'?: string })['data-state'] === 'active'
+  const shouldReduceMotion = useReducedMotion()
   return (
     <TabsPrimitive.Trigger
       ref={ref}
@@ -42,7 +43,7 @@ const TabsTrigger = React.forwardRef<
         layoutId="activeTab"
         className="absolute inset-0 bg-card rounded-sm shadow-sm -z-10"
         initial={false}
-        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+        transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 500, damping: 30 }}
         style={{ opacity: isActive ? 1 : 0 }}
       />
     </TabsPrimitive.Trigger>

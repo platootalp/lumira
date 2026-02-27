@@ -54,37 +54,40 @@ const SheetContent = React.forwardRef<
   return (
     <SheetPortal>
       <AnimatePresence>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <SheetOverlay />
-        </motion.div>
-        <DialogPrimitive.Content
-          ref={ref}
-          className={cn(
-            "fixed z-50 gap-4 bg-card p-6 shadow-lg",
-            sideClasses[side],
-            className
-          )}
-          asChild
-          {...props}
-        >
+        <>
           <motion.div
-            initial={side === 'right' ? { x: '100%' } : side === 'left' ? { x: '-100%' } : side === 'top' ? { y: '-100%' } : { y: '100%' }}
-            animate={{ x: 0, y: 0 }}
-            exit={side === 'right' ? { x: '100%' } : side === 'left' ? { x: '-100%' } : side === 'top' ? { y: '-100%' } : { y: '100%' }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
           >
-            {children}
-            <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2">
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
-            </DialogPrimitive.Close>
+            <SheetOverlay />
           </motion.div>
-        </DialogPrimitive.Content>
+          <DialogPrimitive.Content
+            ref={ref}
+            forceMount
+            className={cn(
+              "fixed z-50 gap-4 bg-card p-6 shadow-lg",
+              sideClasses[side],
+              className
+            )}
+            asChild
+            {...props}
+          >
+            <motion.div
+              initial={side === 'right' ? { x: '100%' } : side === 'left' ? { x: '-100%' } : side === 'top' ? { y: '-100%' } : { y: '100%' }}
+              animate={{ x: 0, y: 0 }}
+              exit={side === 'right' ? { x: '100%' } : side === 'left' ? { x: '-100%' } : side === 'top' ? { y: '-100%' } : { y: '100%' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            >
+              {children}
+              <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2">
+                <X className="h-4 w-4" />
+                <span className="sr-only">Close</span>
+              </DialogPrimitive.Close>
+            </motion.div>
+          </DialogPrimitive.Content>
+        </>
       </AnimatePresence>
     </SheetPortal>
   )

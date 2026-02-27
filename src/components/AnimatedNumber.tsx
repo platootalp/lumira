@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useSpring, useTransform, motion, useReducedMotion } from "framer-motion";
 import { formatNumber } from "@/lib/utils";
 
@@ -26,11 +26,12 @@ export function AnimatedNumber({
   className,
 }: AnimatedNumberProps) {
   const prefersReducedMotion = useReducedMotion();
-  const spring = useSpring(0, {
+  const springConfig = useMemo(() => ({
     stiffness: 50,
     damping: 20,
     duration: prefersReducedMotion ? 0 : duration,
-  });
+  }), [duration, prefersReducedMotion]);
+  const spring = useSpring(0, springConfig);
 
   const display = useTransform(spring, (current) =>
     `${prefix}${formatNumber(current, decimals)}${suffix}`

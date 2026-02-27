@@ -31,9 +31,16 @@ export function StaggerContainer({
             delayChildren: 0.1,
           },
         },
+        exit: {
+          transition: {
+            staggerChildren: staggerDelay * 0.5,
+            staggerDirection: -1,
+          },
+        },
       }}
       initial="initial"
       animate="animate"
+      exit="exit"
     >
       {children}
     </motion.div>
@@ -47,3 +54,5 @@ export function StaggerItem({ children, className }: StaggerItemProps) {
     </motion.div>
   );
 }
+
+StaggerItem.displayName = "StaggerItem";

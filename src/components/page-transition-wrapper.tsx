@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 
 interface PageTransitionWrapperProps {
@@ -9,6 +9,11 @@ interface PageTransitionWrapperProps {
 
 export function PageTransitionWrapper({ children }: PageTransitionWrapperProps) {
   const pathname = usePathname();
+  const shouldReduceMotion = useReducedMotion();
+
+  if (shouldReduceMotion) {
+    return <>{children}</>;
+  }
 
   return (
     <AnimatePresence mode="wait">

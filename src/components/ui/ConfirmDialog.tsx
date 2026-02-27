@@ -30,6 +30,10 @@ export function ConfirmDialog({
           transition={{ duration: 0.2 }}
           className="fixed inset-0 z-50 flex items-center justify-center"
           onClick={() => onOpenChange(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="confirm-dialog-title"
+          aria-describedby="confirm-dialog-description"
         >
           <motion.div
             initial={{ opacity: 0 }}
@@ -54,11 +58,17 @@ export function ConfirmDialog({
             "
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-xl font-semibold text-foreground mb-2">
+            <h2 
+              id="confirm-dialog-title"
+              className="text-xl font-semibold text-foreground mb-2"
+            >
               {title}
             </h2>
 
-            <p className="text-muted-foreground mb-6 leading-relaxed">
+            <p 
+              id="confirm-dialog-description"
+              className="text-muted-foreground mb-6 leading-relaxed"
+            >
               {description}
             </p>
 
