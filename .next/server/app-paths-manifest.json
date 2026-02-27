@@ -1,12 +1,12 @@
 {
-  "/not-found": "app/not-found.js",
   "/page": "app/page.js",
-  "/login/page": "app/login/page.js",
+  "/register/page": "app/register/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/holdings/page": "app/holdings/page.js",
-  "/analysis/page": "app/analysis/page.js",
-  "/rankings/page": "app/rankings/page.js",
+  "/login/page": "app/login/page.js",
   "/sip/page": "app/sip/page.js",
+  "/analysis/page": "app/analysis/page.js",
   "/compare/page": "app/compare/page.js",
-  "/import/page": "app/import/page.js"
+  "/import/page": "app/import/page.js",
+  "/rankings/page": "app/rankings/page.js"
 }

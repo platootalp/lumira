@@ -6,22 +6,21 @@
    - Local:        http://localhost:3000
    - Environments: .env.local
 
- ✓ Ready in 2.6s
+ ✓ Ready in 2.7s
  ○ Compiling / ...
- ✓ Compiled / in 3s (871 modules)
- ✓ Compiled in 503ms (445 modules)
- ○ Compiling /login ...
- ✓ Compiled /login in 576ms (879 modules)
+ ✓ Compiled / in 3.3s (1674 modules)
+ ✓ Compiled in 535ms (847 modules)
+ ○ Compiling /register ...
+ ✓ Compiled /register in 1444ms (1682 modules)
+ ✓ Compiled /login in 358ms (1690 modules)
  ○ Compiling /dashboard ...
- ✓ Compiled /dashboard in 2.3s (2028 modules)
- ○ Compiling /not-found ...
- ✓ Compiled /not-found in 574ms (2033 modules)
- ✓ Compiled /holdings in 277ms (2055 modules)
- ✓ Compiled /analysis in 373ms (2063 modules)
+ ✓ Compiled /dashboard in 1608ms (2841 modules)
+ ○ Compiling /holdings ...
+ ✓ Compiled /holdings in 952ms (2865 modules)
+ ○ Compiling /analysis ...
+ ✓ Compiled /analysis in 556ms (2873 modules)
  ○ Compiling /sip ...
- ✓ Compiled /sip in 531ms (2077 modules)
- ✓ Compiled /rankings in 396ms (2089 modules)
- ✓ Compiled /compare in 224ms (2097 modules)
- ○ Compiling /import ...
- ✓ Compiled /import in 585ms (2204 modules)
-[?25h
+ ✓ Compiled /sip in 815ms (2887 modules)
+ ✓ Compiled /rankings in 341ms (2899 modules)
+ ✓ Compiled /compare in 269ms (2907 modules)
+ ✓ Compiled /import in 426ms (3012 modules)
