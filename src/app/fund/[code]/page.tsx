@@ -12,6 +12,8 @@ import { formatNumber, cn } from "@/lib/utils";
 import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Plus } from "lucide-react";
 import { TransactionForm } from "@/components/transaction-form";
 import { NavHistoryChart } from "@/components/charts/NavHistoryChart";
+import { PageTransition } from "@/components/PageTransition";
+import { AnimatedNumber, AnimatedCurrency, AnimatedPercent } from "@/components/AnimatedNumber";
 
 import type { FundEstimate } from "@/types";
 
@@ -106,7 +108,8 @@ export default function FundDetailPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <PageTransition>
+      <main className="min-h-screen bg-background">
       {/* 顶部导航 */}
       <header className="bg-background border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -144,9 +147,10 @@ export default function FundDetailPage() {
             <CardHeader className="pb-2">
               <CardDescription>最新净值</CardDescription>
               <CardTitle className="text-2xl font-mono">
-                {estimate.lastNav.toFixed(4)}
+                <AnimatedNumber value={estimate.lastNav} decimals={4} />
               </CardTitle>
             </CardHeader>
+
             <CardContent>
               <p className="text-sm text-muted-foreground">{estimate.lastNavDate}</p>
             </CardContent>
@@ -159,19 +163,27 @@ export default function FundDetailPage() {
                 "text-2xl font-mono",
                 estimate.estimateChangePercent >= 0 ? "text-red-500" : "text-green-500"
               )}>
-                {estimate.estimateNav.toFixed(4)}
+                <AnimatedNumber 
+                  value={estimate.estimateNav} 
+                  decimals={4}
+                  className={estimate.estimateChangePercent >= 0 ? "text-red-500" : "text-green-500"}
+                />
               </CardTitle>
             </CardHeader>
+
             <CardContent>
               <p className={cn(
                 "text-sm font-medium",
                 estimate.estimateChangePercent >= 0 ? "text-red-500" : "text-green-500"
               )}>
-                {estimate.estimateChangePercent >= 0 ? "+" : ""}
-                {estimate.estimateChangePercent.toFixed(2)}%
+                <AnimatedPercent 
+                  value={estimate.estimateChangePercent}
+                  className={estimate.estimateChangePercent >= 0 ? "text-red-500" : "text-green-500"}
+                />
               </p>
             </CardContent>
           </Card>
+
 
           {profit && (
             <>
@@ -179,9 +191,10 @@ export default function FundDetailPage() {
                 <CardHeader className="pb-2">
                   <CardDescription>持仓市值</CardDescription>
                   <CardTitle className="text-2xl font-mono">
-                    ¥{formatNumber(profit.marketValue)}
+                    <AnimatedCurrency value={profit.marketValue} />
                   </CardTitle>
                 </CardHeader>
+
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
                     {holding?.totalShares.toFixed(2)} 份
@@ -203,15 +216,22 @@ export default function FundDetailPage() {
                     "text-2xl font-mono",
                     isProfit ? "text-red-500" : "text-green-500"
                   )}>
-                    {isProfit ? "+" : ""}¥{formatNumber(profit.profit)}
-                  </CardTitle>
-                </CardHeader>
+                    <AnimatedCurrency 
+                      value={profit.profit}
+                      className={isProfit ? "text-red-500" : "text-green-500"}
+                    />
+                    </CardTitle>
+                  </CardHeader>
+
                 <CardContent>
                   <p className={cn(
                     "text-sm font-medium",
                     isProfit ? "text-red-500" : "text-green-500"
                   )}>
-                    {isProfit ? "+" : ""}{profit.profitRate.toFixed(2)}%
+                    <AnimatedPercent 
+                      value={profit.profitRate}
+                      className={isProfit ? "text-red-500" : "text-green-500"}
+                    />
                   </p>
                 </CardContent>
               </Card>
@@ -314,13 +334,13 @@ export default function FundDetailPage() {
                       <div className="p-4 bg-background rounded-lg">
                         <p className="text-sm text-muted-foreground">总成本</p>
                         <p className="text-xl font-mono font-medium">
-                          ¥{formatNumber(holding.totalCost)}
+                          <AnimatedCurrency value={holding.totalCost} />
                         </p>
                       </div>
                       <div className="p-4 bg-background rounded-lg">
                         <p className="text-sm text-muted-foreground">平均成本</p>
                         <p className="text-xl font-mono font-medium">
-                          ¥{holding.avgCost.toFixed(4)}
+                          <AnimatedNumber value={holding.avgCost} decimals={4} />
                         </p>
                       </div>
                     </div>
@@ -330,7 +350,7 @@ export default function FundDetailPage() {
                         <div className="p-4 bg-background rounded-lg">
                           <p className="text-sm text-muted-foreground">当前市值</p>
                           <p className="text-xl font-mono font-medium">
-                            ¥{formatNumber(profit.marketValue)}
+                            <AnimatedCurrency value={profit.marketValue} />
                           </p>
                         </div>
                         <div className="p-4 bg-background rounded-lg">
@@ -339,7 +359,10 @@ export default function FundDetailPage() {
                             "text-xl font-mono font-medium",
                             isProfit ? "text-red-500" : "text-green-500"
                           )}>
-                            {isProfit ? "+" : ""}¥{formatNumber(profit.profit)}
+                            <AnimatedCurrency 
+                              value={profit.profit}
+                              className={isProfit ? "text-red-500" : "text-green-500"}
+                            />
                           </p>
                         </div>
                       </div>
@@ -382,7 +405,8 @@ export default function FundDetailPage() {
           />
         </div>
       )}
-    </main>
+      </main>
+    </PageTransition>
   );
 }
 
