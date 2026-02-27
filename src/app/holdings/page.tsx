@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FundCard } from "@/components/fund-card";
+import { StaggerContainer, StaggerItem } from "@/components/StaggerContainer";
 import { useHoldings } from "@/hooks/use-holdings";
 import { getBatchEstimates, calculateEstimateProfit } from "@/services/fund";
 import { formatNumber } from "@/lib/utils";
@@ -195,11 +196,13 @@ function HoldingsContent() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <StaggerContainer className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {filteredHoldings.map((holding) => (
-              <FundCard key={holding.id} holding={holding} />
+              <StaggerItem key={holding.id}>
+                <FundCard holding={holding} />
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         )}
       </div>
     </div>

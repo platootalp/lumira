@@ -1,7 +1,13 @@
 "use client";
 
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import {
+  staggerContainer,
+  staggerItem,
+  fadeInUp,
+} from "@/lib/animations";
 import {
   Sparkles,
   TrendingUp,
@@ -76,21 +82,41 @@ export default function LandingPage() {
 
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8">
+          <motion.div
+            initial="initial"
+            animate="animate"
+            variants={fadeInUp}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8"
+          >
             <Sparkles className="w-4 h-4" />
             面向散户投资者的基金持仓管理工具
-          </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
+          </motion.div>
+          <motion.h1
+            initial="initial"
+            animate="animate"
+            variants={fadeInUp}
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight"
+          >
             智能管理您的
             <span className="bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
               基金投资
             </span>
-          </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+          </motion.h1>
+          <motion.p
+            initial="initial"
+            animate="animate"
+            variants={fadeInUp}
+            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
+          >
             Lumira 帮助您轻松跟踪基金持仓、分析投资收益、制定定投计划，
             让投资决策更加科学和高效。
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          </motion.p>
+          <motion.div
+            initial="initial"
+            animate="animate"
+            variants={fadeInUp}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
             <Button asChild size="lg" className="h-12 px-8 text-base">
               <Link href="/register">
                 免费开始使用
@@ -100,24 +126,37 @@ export default function LandingPage() {
             <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base">
               <Link href="/login">已有账户？登录</Link>
             </Button>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       <section className="py-20 bg-muted/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <motion.div
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInUp}
+            className="text-center mb-16"
+          >
             <h2 className="text-3xl font-bold text-foreground mb-4">核心功能</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               全方位的基金投资管理工具，满足您从持仓跟踪到收益分析的各种需求
             </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          </motion.div>
+          <motion.div
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          >
             {features.map((feature) => {
               const Icon = feature.icon;
               return (
-                <div
+                <motion.div
                   key={feature.title}
+                  variants={staggerItem}
                   className="group p-6 bg-background rounded-2xl border border-border/50 shadow-sm hover:shadow-lg hover:border-blue-200 transition-all duration-300"
                 >
                   <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/90 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
@@ -129,34 +168,58 @@ export default function LandingPage() {
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {feature.description}
                   </p>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-foreground mb-6">
+            <motion.div
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+            >
+              <motion.h2
+                variants={staggerItem}
+                className="text-3xl font-bold text-foreground mb-6"
+              >
                 为什么选择 Lumira？
-              </h2>
-              <p className="text-muted-foreground mb-8 leading-relaxed">
+              </motion.h2>
+              <motion.p
+                variants={staggerItem}
+                className="text-muted-foreground mb-8 leading-relaxed"
+              >
                 我们致力于提供最优质的基金投资管理体验，通过实时数据同步、
                 智能分析工具和便捷的数据管理功能，帮助您做出更明智的投资决策。
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              </motion.p>
+              <motion.div
+                variants={staggerContainer}
+                className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+              >
                 {highlights.map((item) => (
-                  <div key={item} className="flex items-center gap-3">
+                  <motion.div
+                    key={item}
+                    variants={staggerItem}
+                    className="flex items-center gap-3"
+                  >
                     <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
                     <span className="text-muted-foreground">{item}</span>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
-            </div>
-            <div className="relative">
+              </motion.div>
+            </motion.div>
+            <motion.div
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeInUp}
+              className="relative"
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-3xl transform rotate-3" />
               <div className="relative bg-background p-8 rounded-3xl border border-border/50 shadow-xl">
                 <div className="flex items-center gap-4 mb-6">
@@ -183,12 +246,18 @@ export default function LandingPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-br from-blue-600 to-purple-600">
+      <motion.section
+        initial="initial"
+        whileInView="animate"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={fadeInUp}
+        className="py-20 bg-gradient-to-br from-blue-600 to-purple-600"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-primary-foreground mb-4">
             开始您的基金投资之旅
@@ -207,7 +276,7 @@ export default function LandingPage() {
             </Link>
           </Button>
         </div>
-      </section>
+      </motion.section>
 
       <footer className="py-12 bg-muted text-muted-foreground">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

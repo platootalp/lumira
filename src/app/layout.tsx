@@ -6,6 +6,7 @@ import { ToastProvider } from "@/components/ui/toast";
 import { QueryClientProvider } from "@/components/query-client-provider";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { ThemeProvider } from "@/components/theme-provider";
+import { PageTransitionWrapper } from "@/components/page-transition-wrapper";
 
 export const metadata: Metadata = {
   title: "Lumira - 基金投资助手",
@@ -25,7 +26,9 @@ export default function RootLayout({
             <AuthProvider>
               <ToastProvider>
                 <ErrorBoundary>
-                  <AppLayout>{children}</AppLayout>
+                  <AppLayout>
+                    <PageTransitionWrapper>{children}</PageTransitionWrapper>
+                  </AppLayout>
                 </ErrorBoundary>
               </ToastProvider>
             </AuthProvider>

@@ -10,6 +10,7 @@ import { ArrowLeft, Plus, X, TrendingUp, Search, Trophy } from "lucide-react";
 import Link from "next/link";
 import { searchFunds, getFundEstimate } from "@/services/fund";
 import type { Fund, FundEstimate } from "@/types";
+import { PageTransition } from "@/components/PageTransition";
 
 interface CompareFund extends Fund {
   estimate?: FundEstimate;
@@ -73,7 +74,8 @@ export default function ComparePage() {
   };
 
   return (
-    <main className="min-h-screen bg-background">
+    <PageTransition>
+      <main className="min-h-screen bg-background">
       {/* 顶部导航 */}
       <header className="bg-background border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -299,6 +301,7 @@ export default function ComparePage() {
           </Card>
         )}
       </div>
-    </main>
+      </main>
+    </PageTransition>
   );
 }

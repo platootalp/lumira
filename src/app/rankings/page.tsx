@@ -13,6 +13,7 @@ import {
   getHotRanking,
   type RankingItem,
 } from "@/lib/eastmoney-ranking-api";
+import { PageTransition } from "@/components/PageTransition";
 
 type TabType = "daily" | "decline" | "hot";
 
@@ -71,7 +72,8 @@ export default function RankingsPage() {
   const currentData = rankings[activeTab];
 
   return (
-    <main className="min-h-screen bg-background">
+    <PageTransition>
+      <main className="min-h-screen bg-background">
       {/* 顶部导航 */}
       <header className="bg-background border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -233,6 +235,7 @@ export default function RankingsPage() {
           </p>
         </div>
       </div>
-    </main>
+      </main>
+    </PageTransition>
   );
 }

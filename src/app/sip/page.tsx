@@ -12,6 +12,7 @@ import {
   Percent,
   Coins
 } from "lucide-react";
+import { PageTransition } from "@/components/PageTransition";
 
 export default function SIPPage() {
   const [monthlyAmount, setMonthlyAmount] = useState("1000");
@@ -45,19 +46,20 @@ export default function SIPPage() {
   }, [monthlyAmount, years, annualRate]);
 
   return (
-    <div className="min-h-screen bg-background p-4 lg:p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-            <Calculator className="w-5 h-5 text-purple-600" />
+    <PageTransition>
+      <div className="min-h-screen bg-background p-4 lg:p-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+              <Calculator className="w-5 h-5 text-purple-600" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">定投计划</h1>
+              <p className="text-sm text-muted-foreground">计算定投收益，制定投资计划</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">定投计划</h1>
-            <p className="text-sm text-muted-foreground">计算定投收益，制定投资计划</p>
-          </div>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Card className="lg:col-span-1">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -228,9 +230,10 @@ export default function SIPPage() {
                 </CardContent>
               </Card>
             )}
+            </div>
           </div>
-        </div>
       </div>
-    </div>
+      </div>
+    </PageTransition>
   );
 }
