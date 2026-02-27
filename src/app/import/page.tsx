@@ -9,7 +9,6 @@ import { ManualTab } from "@/components/import/ManualTab";
 import { ExcelTab } from "@/components/import/ExcelTab";
 import { OcrTab } from "@/components/import/OcrTab";
 import { ProtectedRoute } from "@/components/auth/protected-route";
-import { PageTransition } from "@/components/PageTransition";
 
 type ImportTab = "search" | "manual" | "excel" | "ocr";
 
@@ -34,7 +33,7 @@ function ImportContent() {
   };
 
   return (
-    <PageTransition>
+      <div className="min-h-screen bg-background p-4 lg:p-8">
       <div className="min-h-screen bg-background p-4 lg:p-8">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
@@ -79,7 +78,7 @@ function ImportContent() {
           </Card>
         </div>
       </div>
-    </PageTransition>
+      </div>
   );
 }
 

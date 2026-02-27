@@ -12,7 +12,6 @@ import { formatNumber, cn } from "@/lib/utils";
 import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Plus } from "lucide-react";
 import { TransactionForm } from "@/components/transaction-form";
 import { NavHistoryChart } from "@/components/charts/NavHistoryChart";
-import { PageTransition } from "@/components/PageTransition";
 import { AnimatedNumber, AnimatedCurrency, AnimatedPercent } from "@/components/AnimatedNumber";
 
 import type { FundEstimate } from "@/types";
@@ -108,7 +107,7 @@ export default function FundDetailPage() {
   }
 
   return (
-    <PageTransition>
+      <main className="min-h-screen bg-background">
       <main className="min-h-screen bg-background">
       {/* 顶部导航 */}
       <header className="bg-background border-b sticky top-0 z-10">
@@ -406,7 +405,7 @@ export default function FundDetailPage() {
         </div>
       )}
       </main>
-    </PageTransition>
+      </main>
   );
 }
 

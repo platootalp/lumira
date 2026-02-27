@@ -20,7 +20,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { FundEstimate, HoldingWithEstimate } from "@/types";
 
 import { ProtectedRoute } from "@/components/auth/protected-route";
-import { PageTransition } from "@/components/PageTransition";
 import { AnimatedCurrency } from "@/components/AnimatedNumber";
 
 function DashboardContent() {
@@ -94,7 +93,7 @@ function DashboardContent() {
   }
 
   return (
-    <PageTransition>
+      <div className="min-h-screen bg-background p-4 lg:p-8">
       <div className="min-h-screen bg-background p-4 lg:p-8">
         <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
@@ -240,7 +239,7 @@ function DashboardContent() {
         </div>
         </div>
       </div>
-    </PageTransition>
+      </div>
   );
 }
 

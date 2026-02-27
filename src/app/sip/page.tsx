@@ -12,7 +12,6 @@ import {
   Percent,
   Coins
 } from "lucide-react";
-import { PageTransition } from "@/components/PageTransition";
 
 export default function SIPPage() {
   const [monthlyAmount, setMonthlyAmount] = useState("1000");
@@ -46,7 +45,7 @@ export default function SIPPage() {
   }, [monthlyAmount, years, annualRate]);
 
   return (
-    <PageTransition>
+      <div className="min-h-screen bg-background p-4 lg:p-8">
       <div className="min-h-screen bg-background p-4 lg:p-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
@@ -234,6 +233,6 @@ export default function SIPPage() {
           </div>
       </div>
       </div>
-    </PageTransition>
+      </div>
   );
 }
