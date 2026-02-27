@@ -20,6 +20,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { FundEstimate, HoldingWithEstimate } from "@/types";
 
 import { ProtectedRoute } from "@/components/auth/protected-route";
+import { PageTransition } from "@/components/PageTransition";
+import { AnimatedCurrency } from "@/components/AnimatedNumber";
 
 function DashboardContent() {
   const { data: holdings = [], error } = useHoldings();
@@ -92,8 +94,9 @@ function DashboardContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 lg:p-8">
-      <div className="max-w-7xl mx-auto">
+    <PageTransition>
+      <div className="min-h-screen bg-background p-4 lg:p-8">
+        <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
             <Sparkles className="w-5 h-5 text-white" />
@@ -115,7 +118,7 @@ function DashboardContent() {
                 总资产
               </CardDescription>
               <CardTitle className="text-3xl font-bold amount-display text-foreground">
-                ¥{formatNumber(summary.totalAssets)}
+                <AnimatedCurrency value={summary.totalAssets} />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -141,7 +144,7 @@ function DashboardContent() {
                 累计收益
               </CardDescription>
               <CardTitle className={cn("text-3xl font-bold amount-display", isProfit ? "profit-up" : "profit-down")}>
-                {isProfit ? "+" : ""}¥{formatNumber(summary.totalProfit)}
+                <AnimatedCurrency value={summary.totalProfit} />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -162,7 +165,7 @@ function DashboardContent() {
                 今日预估收益
               </CardDescription>
               <CardTitle className={cn("text-3xl font-bold amount-display", isTodayProfit ? "profit-up" : "profit-down")}>
-                {isTodayProfit ? "+" : ""}¥{formatNumber(summary.todayProfit)}
+                <AnimatedCurrency value={summary.todayProfit} />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -235,8 +238,9 @@ function DashboardContent() {
             </div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }
 
