@@ -150,19 +150,22 @@ export const staggerItem: Variants = {
 export const pageTransition: Variants = {
   initial: {
     opacity: 0,
-    y: 10,
+    y: 15,
   },
   animate: {
     opacity: 1,
     y: 0,
-    transition: transitions.slow,
+    transition: {
+      duration: 0.4,
+      ease: [0.25, 0.1, 0.25, 1],
+    },
   },
   exit: {
     opacity: 0,
     y: -10,
     transition: {
-      duration: duration.fast,
-      ease: easing.exit,
+      duration: 0.2,
+      ease: [0.4, 0, 1, 1],
     },
   },
 };
